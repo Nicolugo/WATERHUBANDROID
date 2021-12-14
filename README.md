@@ -62,3 +62,76 @@ make test
 ### Current status
 
 #### Blargg's test ROM
+
+| ROM          | Result    |
+| ------------ | --------- |
+| cpu_instrs   | ✅        |
+| instr_timing | ❌ (#255) |
+
+#### mooneye-gb's test ROM
+
+| ROM                           | Result |
+| ----------------------------- | ------ |
+| emulator-only/mbc1/bits_bank1 | ✅     |
+| acceptance/instr/daa          | ✅     |
+| acceptance/timer/div_write    | ✅     |
+| acceptance/timer/tim00        | ✅     |
+| acceptance/timer/tim01        | ✅     |
+| acceptance/timer/tim10        | ✅     |
+| acceptance/timer/tim11        | ✅     |
+| acceptance/if_ie_registers    | ✅     |
+
+### Visual regression test
+
+Please install `reg-cli`.
+
+```sh
+npm i -g reg-cli
+```
+
+Execute regression test
+
+```sh
+make reg
+```
+
+Update expected images
+
+```sh
+make reg-update
+```
+
+## Credit
+
+"gopher" by Renée French CC-BY-3.0
+
+## Known Bugs and TODO list
+
+PR welcome :)
+
+- [ ] Implement APU
+- [ ] Support scale option
+- [x] Support WebAssembly
+- [x] 8\*16 sprite
+- [ ] LCD interrupt
+- [ ] Keypad interrupt
+- [ ] cartridges
+  - [x] Support ROM+MBC1+RAM+BATT catridge
+  - [ ] Support ROM+MBC2 catridge
+  - [ ] Support ROM+MBC2+BATTERY catridge
+  - [ ] Support ROM+RAM catridge
+  - [ ] Support ROM+RAM+BATTERY catridge
+  - [ ] Support ROM+MMM01 catridge
+  - [ ] Support ROM+MMM01+SRAM catridge
+  - [ ] Support ROM+MMM01+SRAM+BATT catridge
+  - [ ] Support ROM+MBC3+RAM catridge
+  - [ ] Support ROM+MBC3+RAM+BATT catridge
+  - [ ] Support ROM+MBC5 catridge
+  - [ ] Support ROM+MBC5+RAM catridge
+  - [ ] Support ROM+MBC5+RAM+BATT catridge
+  - [ ] Support ROM+MBC5+RUMBLE catridge
+  - [ ] Support ROM+MBC5+RUMBLE+SRAM catridge
+  - [ ] Support ROM+MBC5+RUMBLE+SRAM+BATT catridge
+  - [ ] Support Pocket Camera catridge
+  - [ ] Support Bandai TAMA5 catridge
+  - [ ] Support Hudson HuC-3 catridge
