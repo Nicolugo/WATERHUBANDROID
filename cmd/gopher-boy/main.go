@@ -20,4 +20,15 @@ import (
 	"github.com/bokuweb/gopher-boy/pkg/ram"
 
 	"github.com/bokuweb/gopher-boy/pkg/bus"
-	"github.com/b
+	"github.com/bokuweb/gopher-boy/pkg/cartridge"
+	"github.com/bokuweb/gopher-boy/pkg/window"
+)
+
+func main() {
+	level := "Debug"
+	if os.Getenv("LEVEL") != "" {
+		level = os.Getenv("LEVEL")
+	}
+	l := logger.NewLogger(logger.LogLevel(level))
+	if len(os.Args) != 2 {
+		log.Fatalf("ERRO
