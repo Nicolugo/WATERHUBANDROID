@@ -31,4 +31,14 @@ func main() {
 	}
 	l := logger.NewLogger(logger.LogLevel(level))
 	if len(os.Args) != 2 {
-		log.Fatalf("ERRO
+		log.Fatalf("ERROR: %v", errors.New("Please specify the ROM"))
+	}
+	file := os.Args[1]
+	log.Println(file)
+	buf, err := utils.LoadROM(file)
+	if err != nil {
+		log.Fatalf("ERROR: %v", errors.New("Failed to load ROM"))
+	}
+	cart, err := cartridge.NewCartridge(buf)
+	if err != nil {
+		log.Fatalf(
