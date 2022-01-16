@@ -41,4 +41,14 @@ func main() {
 	}
 	cart, err := cartridge.NewCartridge(buf)
 	if err != nil {
-		log.Fatalf(
+		log.Fatalf("ERROR: %v", errors.New("Failed to create cartridge"))
+	}
+	vRAM := ram.NewRAM(0x2000)
+	wRAM := ram.NewRAM(0x2000)
+	hRAM := ram.NewRAM(0x80)
+	oamRAM := ram.NewRAM(0xA0)
+	gpu := gpu.NewGPU()
+	t := timer.NewTimer()
+	pad := pad.NewPad()
+	irq := interrupt.NewInterrupt()
+	b := bus.NewBus(
