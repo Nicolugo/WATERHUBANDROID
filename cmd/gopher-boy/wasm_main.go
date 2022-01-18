@@ -24,3 +24,13 @@ import (
 
 	"github.com/bokuweb/gopher-boy/pkg/bus"
 	"github.com/bokuweb/gopher-boy/pkg/cartridge"
+)
+
+func newGB(this js.Value, args []js.Value) interface{} {
+	buf := []byte{}
+	for i := 0; i < args[0].Get("length").Int(); i++ {
+		buf = append(buf, byte(args[0].Index(i).Int()))
+	}
+	l := logger.NewLogger(logger.LogLevel("INFO"))
+	cart, err := cartridge.NewCartridge(buf)
+	if err != nil {
