@@ -59,4 +59,12 @@ func newGB(this js.Value, args []js.Value) interface{} {
 		return nil
 	}))
 	this.Set("keyUp", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		win.KeyUp(byte(
+		win.KeyUp(byte(args[0].Int()))
+		return nil
+	}))
+	// for Debuging
+	this.Set("getVRAM", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		d := vRAM.GetBuf()
+		return js.CopyBytesToJS(args[0], d)
+	}))
+	this.Set("getOAMRAM", js.FuncOf(func(this js.Value, args []js.V
