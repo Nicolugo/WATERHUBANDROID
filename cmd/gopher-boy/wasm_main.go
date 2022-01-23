@@ -52,4 +52,11 @@ func newGB(this js.Value, args []js.Value) interface{} {
 
 	this.Set("next", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		img := emu.Next()
-		retu
+		return js.CopyBytesToJS(args[0], img)
+	}))
+	this.Set("keyDown", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		win.KeyDown(byte(args[0].Int()))
+		return nil
+	}))
+	this.Set("keyUp", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		win.KeyUp(byte(
