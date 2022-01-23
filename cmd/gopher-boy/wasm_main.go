@@ -44,4 +44,12 @@ func newGB(this js.Value, args []js.Value) interface{} {
 	t := timer.NewTimer()
 	pad := pad.NewPad()
 	irq := interrupt.NewInterrupt()
-	b := bus.NewBus(l, car
+	b := bus.NewBus(l, cart, gpu, vRAM, wRAM, hRAM, oamRAM, t, irq, pad)
+	gpu.Init(b, irq)
+
+	win := window.NewWindow(pad)
+	emu := gb.NewGB(cpu.NewCPU(l, b, irq), gpu, t, irq, win)
+
+	this.Set("next", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		img := emu.Next()
+		retu
