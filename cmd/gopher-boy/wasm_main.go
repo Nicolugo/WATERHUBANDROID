@@ -67,4 +67,15 @@ func newGB(this js.Value, args []js.Value) interface{} {
 		d := vRAM.GetBuf()
 		return js.CopyBytesToJS(args[0], d)
 	}))
-	this.Set("getOAMRAM", js.FuncOf(func(this js.Value, args []js.V
+	this.Set("getOAMRAM", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		d := oamRAM.GetBuf()
+		return js.CopyBytesToJS(args[0], d)
+	}))
+	this.Set("readGPU", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		return gpu.Read(types.Word(args[0].Int()))
+	}))
+	return this
+}
+
+func main() {
+	w := js.Gl
