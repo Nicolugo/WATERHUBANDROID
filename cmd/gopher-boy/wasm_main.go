@@ -78,4 +78,7 @@ func newGB(this js.Value, args []js.Value) interface{} {
 }
 
 func main() {
-	w := js.Gl
+	w := js.Global()
+	w.Set("GB", js.FuncOf(newGB))
+	select {}
+}
