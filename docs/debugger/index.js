@@ -27,4 +27,13 @@ const gpuWX = document.querySelector(".gpu-wx");
 const tileData0 = document.querySelector(".tiledata0");
 
 const renderTileMap = (ctx, vram, tiles, offsetAddr, tileData0Selected) => {
-  con
+  const tileMap = [];
+  for (let n = 0; n < 1024; n++) {
+    const tileId = vram[offsetAddr + n];
+    let index = tileId;
+    if (tileData0Selected) {
+      index =
+        (tileId & 0x80 ? new Int8Array([tileId])[0] : tileId & 0x7f) + 256;
+    }
+    const sprite = tiles[index];
+    for (let i
