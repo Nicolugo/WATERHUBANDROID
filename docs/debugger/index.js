@@ -20,4 +20,11 @@ const gpuLYC = document.querySelector(".gpu-lyc");
 const gpuDMA = document.querySelector(".gpu-dma");
 const gpuBGP = document.querySelector(".gpu-bgp");
 const gpuOBP0 = document.querySelector(".gpu-obp0");
-const gpuOBP1 =
+const gpuOBP1 = document.querySelector(".gpu-obp1");
+const gpuWY = document.querySelector(".gpu-wy");
+const gpuWX = document.querySelector(".gpu-wx");
+
+const tileData0 = document.querySelector(".tiledata0");
+
+const renderTileMap = (ctx, vram, tiles, offsetAddr, tileData0Selected) => {
+  con
