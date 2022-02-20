@@ -36,4 +36,10 @@ const renderTileMap = (ctx, vram, tiles, offsetAddr, tileData0Selected) => {
         (tileId & 0x80 ? new Int8Array([tileId])[0] : tileId & 0x7f) + 256;
     }
     const sprite = tiles[index];
-    for (let i
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const c = getPalette(sprite[i][j]);
+        const x = j + (n % 32) * 8;
+        const y = i + ~~(n / 32) * 8;
+        tileMap[(y * 256 + x) * 4] = c[0];
+        tileMap[(y * 256 + x) * 4 + 1] = c[1
