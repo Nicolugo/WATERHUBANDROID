@@ -15,4 +15,9 @@ const gpuLCDC = document.querySelector(".gpu-lcdc");
 const gpuSTAT = document.querySelector(".gpu-stat");
 const gpuSCROLLY = document.querySelector(".gpu-scrolly");
 const gpuSCROLLX = document.querySelector(".gpu-scrollx");
-const gpu
+const gpuLY = document.querySelector(".gpu-ly");
+const gpuLYC = document.querySelector(".gpu-lyc");
+const gpuDMA = document.querySelector(".gpu-dma");
+const gpuBGP = document.querySelector(".gpu-bgp");
+const gpuOBP0 = document.querySelector(".gpu-obp0");
+const gpuOBP1 =
