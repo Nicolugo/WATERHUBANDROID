@@ -53,4 +53,11 @@ const renderTileMap = (ctx, vram, tiles, offsetAddr, tileData0Selected) => {
   ctx.putImageData(image, 0, 0);
 };
 
-const renderWindow = (ctx, v
+const renderWindow = (ctx, vram, tiles, offsetAddr, wx, wy) => {
+  const windowMap = [];
+  for (let n = 0; n < 640; n++) {
+    const tileId = vram[offsetAddr + n];
+    let index = tileId;
+    index = (tileId & 0x80 ? new Int8Array([tileId])[0] : tileId & 0x7f) + 256;
+    const sprite = tiles[index];
+    
