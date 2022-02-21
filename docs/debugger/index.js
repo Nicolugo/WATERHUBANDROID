@@ -42,4 +42,15 @@ const renderTileMap = (ctx, vram, tiles, offsetAddr, tileData0Selected) => {
         const x = j + (n % 32) * 8;
         const y = i + ~~(n / 32) * 8;
         tileMap[(y * 256 + x) * 4] = c[0];
-        tileMap[(y * 256 + x) * 4 + 1] = c[1
+        tileMap[(y * 256 + x) * 4 + 1] = c[1];
+        tileMap[(y * 256 + x) * 4 + 2] = c[2];
+        tileMap[(y * 256 + x) * 4 + 3] = 255;
+      }
+    }
+  }
+  const image = ctx.createImageData(256, 256);
+  image.data.set(tileMap);
+  ctx.putImageData(image, 0, 0);
+};
+
+const renderWindow = (ctx, v
