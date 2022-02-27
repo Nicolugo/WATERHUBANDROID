@@ -60,4 +60,10 @@ const renderWindow = (ctx, vram, tiles, offsetAddr, wx, wy) => {
     let index = tileId;
     index = (tileId & 0x80 ? new Int8Array([tileId])[0] : tileId & 0x7f) + 256;
     const sprite = tiles[index];
-    
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const c = getPalette(sprite[i][j]);
+        const x = j + (n % 32) * 8 + wx - 7;
+        const y = i + ~~(n / 32) * 8 + wy;
+        if (x >= 160 || y >= 144) {
+          conti
