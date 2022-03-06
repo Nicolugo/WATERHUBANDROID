@@ -76,4 +76,15 @@ const renderWindow = (ctx, vram, tiles, offsetAddr, wx, wy) => {
     }
   }
   const image = ctx.createImageData(160, 144);
-  i
+  image.data.set(windowMap);
+  ctx.putImageData(image, 0, 0);
+};
+
+const getSpritePaletteID = (tileID, x, y, vram) => {
+  x = x % 8;
+  const addr = tileID * 0x10;
+  const base = addr + y * 2;
+  const l1 = vram[base];
+  const l2 = vram[base + 1];
+  let paletteID = 0;
+  if ((l1 & (0x01 << (7 - x))) !
