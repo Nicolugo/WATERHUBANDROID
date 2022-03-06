@@ -66,4 +66,14 @@ const renderWindow = (ctx, vram, tiles, offsetAddr, wx, wy) => {
         const x = j + (n % 32) * 8 + wx - 7;
         const y = i + ~~(n / 32) * 8 + wy;
         if (x >= 160 || y >= 144) {
-          conti
+          continue;
+        }
+        windowMap[(y * 160 + x) * 4] = c[0];
+        windowMap[(y * 160 + x) * 4 + 1] = c[1];
+        windowMap[(y * 160 + x) * 4 + 2] = c[2];
+        windowMap[(y * 160 + x) * 4 + 3] = 255;
+      }
+    }
+  }
+  const image = ctx.createImageData(160, 144);
+  i
