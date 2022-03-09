@@ -87,4 +87,17 @@ const getSpritePaletteID = (tileID, x, y, vram) => {
   const l1 = vram[base];
   const l2 = vram[base + 1];
   let paletteID = 0;
-  if ((l1 & (0x01 << (7 - x))) !
+  if ((l1 & (0x01 << (7 - x))) !== 0) {
+    paletteID = 1;
+  }
+  if ((l2 & (0x01 << (7 - x))) !== 0) {
+    paletteID += 2;
+  }
+  return paletteID;
+};
+
+const renderSprites = (ctx, oamram, vram, longSprite, obp0, obp1) => {
+  const sprites = [];
+  for (let i = 0; i < 40; i++) {
+    const offsetY = oamram[i * 4] - 16;
+   
