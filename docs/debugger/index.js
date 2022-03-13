@@ -100,4 +100,10 @@ const renderSprites = (ctx, oamram, vram, longSprite, obp0, obp1) => {
   const sprites = [];
   for (let i = 0; i < 40; i++) {
     const offsetY = oamram[i * 4] - 16;
-   
+    const offsetX = oamram[i * 4 + 1] - 8;
+    const tileID = longSprite ? oamram[i * 4 + 2] & 0xfe : oamram[i * 4 + 2];
+    const config = oamram[i * 4 + 3];
+    const yFlip = (config & 0x40) !== 0;
+    const xFlip = (config & 0x20) !== 0;
+    const isPallette1 = config & (0x10 != 0);
+ 
