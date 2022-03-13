@@ -106,4 +106,12 @@ const renderSprites = (ctx, oamram, vram, longSprite, obp0, obp1) => {
     const yFlip = (config & 0x40) !== 0;
     const xFlip = (config & 0x20) !== 0;
     const isPallette1 = config & (0x10 != 0);
- 
+    const height = longSprite ? 16 : 8;
+
+    for (let x = 0; x < 8; x++) {
+      for (let y = 0; y < height; y++) {
+        if (offsetX + x < 0 || offsetX + x >= 160) {
+          continue;
+        }
+        if (offsetY + y < 0 || offsetY + y >= 144) {
+        
