@@ -114,4 +114,11 @@ const renderSprites = (ctx, oamram, vram, longSprite, obp0, obp1) => {
           continue;
         }
         if (offsetY + y < 0 || offsetY + y >= 144) {
-        
+          continue;
+        }
+        const paletteID = getSpritePaletteID(tileID, x, y, vram);
+        const adjustedX = xFlip ? 7 - x : x;
+        const adjustedY = yFlip ? 7 - y : y;
+        const v = isPallette1
+          ? (obp1 >> (paletteID * 2)) & 0x03
+          : (obp0 >> (paletteID
