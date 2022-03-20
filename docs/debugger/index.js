@@ -129,4 +129,17 @@ const renderSprites = (ctx, oamram, vram, longSprite, obp0, obp1) => {
           sprites[base] = c[0];
           sprites[base + 1] = c[1];
           sprites[base + 2] = c[2];
- 
+          sprites[base + 3] = c[3];
+        }
+      }
+    }
+  }
+
+  const image = ctx.createImageData(160, 144);
+  image.data.set(sprites);
+  ctx.putImageData(image, 0, 0);
+};
+
+const buildSprite = (vram, spriteNum) => {
+  const sprite = [];
+  fo
