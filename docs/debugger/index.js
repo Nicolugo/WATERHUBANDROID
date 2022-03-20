@@ -121,4 +121,12 @@ const renderSprites = (ctx, oamram, vram, longSprite, obp0, obp1) => {
         const adjustedY = yFlip ? 7 - y : y;
         const v = isPallette1
           ? (obp1 >> (paletteID * 2)) & 0x03
-          : (obp0 >> (paletteID
+          : (obp0 >> (paletteID * 2)) & 0x03;
+        if (paletteID !== 0) {
+          const c = getPalette(v);
+          const base =
+            ((offsetY + adjustedY) * 160 + (adjustedX + offsetX)) * 4;
+          sprites[base] = c[0];
+          sprites[base + 1] = c[1];
+          sprites[base + 2] = c[2];
+ 
