@@ -142,4 +142,14 @@ const renderSprites = (ctx, oamram, vram, longSprite, obp0, obp1) => {
 
 const buildSprite = (vram, spriteNum) => {
   const sprite = [];
-  fo
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      if (!sprite[y]) sprite[y] = [];
+      let v = 0;
+      if (vram[spriteNum * 16 + y * 2] & (0x80 >> x)) {
+        v += 1;
+      }
+      if (vram[spriteNum * 16 + y * 2 + 1] & (0x80 >> x)) {
+        v += 2;
+      }
+  
