@@ -152,4 +152,15 @@ const buildSprite = (vram, spriteNum) => {
       if (vram[spriteNum * 16 + y * 2 + 1] & (0x80 >> x)) {
         v += 2;
       }
-  
+      sprite[y][x] = v;
+    }
+  }
+  return sprite;
+};
+
+const createTileData = vram => {
+  const imageData = [];
+  const renderSprite = (sprite, spriteNum) => {
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const c = getP
