@@ -170,3 +170,17 @@ const createTileData = vram => {
         imageData[(y * 256 + x) * 4 + 1] = c[1];
         imageData[(y * 256 + x) * 4 + 2] = c[2];
         imageData[(y * 256 + x) * 4 + 3] = 255;
+      }
+    }
+  };
+  const tiles = [];
+  for (let i = 0; i < 384; i++) {
+    const sprite = buildSprite(vram, i);
+    renderSprite(sprite, i);
+    tiles.push(sprite);
+  }
+  return { imageData, tiles };
+};
+
+const renderTileData = imageData => {
+  const ctx = tile
