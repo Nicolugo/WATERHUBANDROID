@@ -163,4 +163,10 @@ const createTileData = vram => {
   const renderSprite = (sprite, spriteNum) => {
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
-        const c = getP
+        const c = getPalette(sprite[i][j]);
+        const x = j + (spriteNum % 16) * 8;
+        const y = i + ~~(spriteNum / 16) * 8;
+        imageData[(y * 256 + x) * 4] = c[0];
+        imageData[(y * 256 + x) * 4 + 1] = c[1];
+        imageData[(y * 256 + x) * 4 + 2] = c[2];
+        imageData[(y * 256 + x) * 4 + 3] = 255;
