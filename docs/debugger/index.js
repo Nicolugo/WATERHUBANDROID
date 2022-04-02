@@ -183,4 +183,14 @@ const createTileData = vram => {
 };
 
 const renderTileData = imageData => {
-  const ctx = tile
+  const ctx = tileData0.getContext("2d");
+  const image = ctx.createImageData(256, 256);
+  image.data.set(imageData);
+  ctx.putImageData(image, 0, 0);
+};
+
+export const renderDebugInfo = gb => {
+  let vram = new Uint8Array(0x2000 * 4);
+  let oamram = new Uint8Array(0x800 * 4);
+  gb.getVRAM(vram);
+ 
