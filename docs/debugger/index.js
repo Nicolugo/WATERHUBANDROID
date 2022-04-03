@@ -203,4 +203,12 @@ export const renderDebugInfo = gb => {
   const lyc = gb.readGPU(5);
   const dma = gb.readGPU(6);
   const bgp = gb.readGPU(7);
-  const obp0 =
+  const obp0 = gb.readGPU(8);
+  const obp1 = gb.readGPU(9);
+  const wy = gb.readGPU(10);
+  const wx = gb.readGPU(11);
+
+  gpuLCDC.textContent = `0x${lcdc.toString(16)}`;
+  gpuSTAT.textContent = `0x${stat.toString(16)}`;
+  gpuSCROLLY.textContent = `0x${scrollY.toString(16)}`;
+  gpuSCROLLX.textContent = `0x${s
