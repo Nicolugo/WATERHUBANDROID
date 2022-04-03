@@ -193,4 +193,14 @@ export const renderDebugInfo = gb => {
   let vram = new Uint8Array(0x2000 * 4);
   let oamram = new Uint8Array(0x800 * 4);
   gb.getVRAM(vram);
- 
+  gb.getOAMRAM(oamram);
+
+  const lcdc = gb.readGPU(0);
+  const stat = gb.readGPU(1);
+  const scrollY = gb.readGPU(2);
+  const scrollX = gb.readGPU(3);
+  const ly = gb.readGPU(4);
+  const lyc = gb.readGPU(5);
+  const dma = gb.readGPU(6);
+  const bgp = gb.readGPU(7);
+  const obp0 =
