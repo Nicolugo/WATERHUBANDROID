@@ -224,4 +224,9 @@ export const renderDebugInfo = gb => {
   // TileData
   const tileData0Selected = () => (lcdc & 0x10) !== 0x10;
   const { imageData, tiles } = createTileData(vram);
-  ren
+  renderTileData(imageData);
+
+  // TileMao
+  const map0Ctx = document.querySelector(".tilemap0-screen").getContext("2d");
+  const map1Ctx = document.querySelector(".tilemap1-screen").getContext("2d");
+  renderTileMap(map0Ctx, vram, tiles, 0x1800, tileData0Selected())
