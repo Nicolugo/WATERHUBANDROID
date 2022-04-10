@@ -211,4 +211,17 @@ export const renderDebugInfo = gb => {
   gpuLCDC.textContent = `0x${lcdc.toString(16)}`;
   gpuSTAT.textContent = `0x${stat.toString(16)}`;
   gpuSCROLLY.textContent = `0x${scrollY.toString(16)}`;
-  gpuSCROLLX.textContent = `0x${s
+  gpuSCROLLX.textContent = `0x${scrollX.toString(16)}`;
+  gpuLY.textContent = `0x${ly.toString(16)}`;
+  gpuLYC.textContent = `0x${lyc.toString(16)}`;
+  gpuDMA.textContent = `0x${dma.toString(16)}`;
+  gpuBGP.textContent = `0x${bgp.toString(16)}`;
+  gpuOBP0.textContent = `0x${obp0.toString(16)}`;
+  gpuOBP1.textContent = `0x${obp1.toString(16)}`;
+  gpuWY.textContent = `0x${wy.toString(16)}`;
+  gpuWX.textContent = `0x${wx.toString(16)}`;
+
+  // TileData
+  const tileData0Selected = () => (lcdc & 0x10) !== 0x10;
+  const { imageData, tiles } = createTileData(vram);
+  ren
