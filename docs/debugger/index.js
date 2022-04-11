@@ -237,4 +237,9 @@ export const renderDebugInfo = gb => {
   map0Ctx.stroke();
 
   // Sprites
-  const spritesCtx = docume
+  const spritesCtx = document.querySelector(".sprites").getContext("2d");
+  renderSprites(spritesCtx, oamram, vram, !!(lcdc & 0x04), obp0, obp1);
+
+  // Window
+  const windowCtx = document.querySelector(".window").getContext("2d");
+  const offset = lcdc & 0x40 ? 0x1c0
