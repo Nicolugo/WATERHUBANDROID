@@ -229,4 +229,12 @@ export const renderDebugInfo = gb => {
   // TileMao
   const map0Ctx = document.querySelector(".tilemap0-screen").getContext("2d");
   const map1Ctx = document.querySelector(".tilemap1-screen").getContext("2d");
-  renderTileMap(map0Ctx, vram, tiles, 0x1800, tileData0Selected())
+  renderTileMap(map0Ctx, vram, tiles, 0x1800, tileData0Selected());
+  renderTileMap(map1Ctx, vram, tiles, 0x1c00, tileData0Selected());
+  map0Ctx.beginPath();
+  map0Ctx.rect(scrollX, scrollY, 160, 144);
+  map0Ctx.strokeStyle = "rgb(0, 0, 255)";
+  map0Ctx.stroke();
+
+  // Sprites
+  const spritesCtx = docume
