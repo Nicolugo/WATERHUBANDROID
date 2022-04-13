@@ -242,4 +242,6 @@ export const renderDebugInfo = gb => {
 
   // Window
   const windowCtx = document.querySelector(".window").getContext("2d");
-  const offset = lcdc & 0x40 ? 0x1c0
+  const offset = lcdc & 0x40 ? 0x1c00 : 0x1800;
+  renderWindow(windowCtx, vram, tiles, offset, wx, wy);
+};
