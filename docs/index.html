@@ -105,3 +105,11 @@
           const canvas = document.querySelector("canvas");
           const input = document.querySelector("#file_upload");
           const elGb = document.querySelector(".gameboy");
+          const selector = document.querySelector("select");
+          const ctx = canvas.getContext("2d");
+          const image = ctx.createImageData(160, 144);
+
+          if (!buf) {
+            const rom = await fetch("./tobu.gb");
+            buf = await rom.arrayBuffer();
+          }
