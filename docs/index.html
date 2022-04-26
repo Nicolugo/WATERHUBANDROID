@@ -97,4 +97,11 @@
         await WebAssembly.instantiateStreaming(
           fetch("./main.wasm"),
           go.importObject
-        ).th
+        ).then(result => {
+          go.run(result.instance);
+        });
+
+        const init = async buf => {
+          const canvas = document.querySelector("canvas");
+          const input = document.querySelector("#file_upload");
+          const elGb = document.querySelector(".gameboy");
