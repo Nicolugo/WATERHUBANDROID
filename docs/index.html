@@ -113,3 +113,10 @@
             const rom = await fetch("./tobu.gb");
             buf = await rom.arrayBuffer();
           }
+          let gb = new GB(new Uint8Array(buf));
+          document.querySelector(".led").style.background = "red";
+          // let img = new Uint8Array(160 * 144 * 4);
+
+          const frame = () => {
+            if (!gb) return;
+            gb.
