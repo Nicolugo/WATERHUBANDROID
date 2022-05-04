@@ -119,4 +119,13 @@
 
           const frame = () => {
             if (!gb) return;
-            gb.
+            gb.next(image.data);
+            ctx.putImageData(image, 0, 0);
+            window.requestAnimationFrame(frame);
+          };
+          frame();
+
+          const onKeydown = e => {
+            switch (e.key) {
+              case "z":
+                return 
