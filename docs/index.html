@@ -147,4 +147,12 @@
           };
 
           const onKeyup = e => {
-   
+            switch (e.key) {
+              case "z":
+                return gb.keyUp(0x01);
+              case "x":
+                return gb.keyUp(0x02);
+              case "Backspace":
+                return gb.keyUp(0x04);
+              case "Enter":
+        
