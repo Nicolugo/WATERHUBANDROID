@@ -162,4 +162,12 @@
                 return gb.keyUp(0x40);
               case "ArrowRight":
                 return gb.keyUp(0x10);
-              case "
+              case "ArrowDown":
+                return gb.keyUp(0x80);
+            }
+          };
+
+          const removeHandler = classname => {
+            const el = document.querySelector(`.${classname}`);
+            const elClone = el.cloneNode(true);
+            el.parentNode.replaceChild(elClone, el);
