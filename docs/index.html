@@ -171,3 +171,10 @@
             const el = document.querySelector(`.${classname}`);
             const elClone = el.cloneNode(true);
             el.parentNode.replaceChild(elClone, el);
+          };
+
+          const cleanup = () => {
+            input.removeEventListener("change", onFileChange);
+            window.removeEventListener("keydown", onKeydown);
+            window.removeEventListener("keyup", onKeyup);
+            removeHandler("buttonA");
