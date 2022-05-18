@@ -184,4 +184,13 @@
             removeHandler("right");
             removeHandler("left");
             removeHandler("up");
-            removeHandler("down"
+            removeHandler("down");
+            gb = null;
+          };
+
+          const onFileChange = e => {
+            const files = e.target.files;
+            const file = files[0];
+            const reader = new FileReader();
+            cleanup();
+            reader.onload = e =
