@@ -193,4 +193,14 @@
             const file = files[0];
             const reader = new FileReader();
             cleanup();
-            reader.onload = e =
+            reader.onload = e => {
+              init(e.currentTarget.result);
+            };
+            reader.readAsArrayBuffer(file);
+          };
+
+          const onROMChange = async e => {
+            cleanup();
+            const rom = await fetch(`./${e.target.value}`);
+            const buf = await rom.arrayBuffer();
+          
