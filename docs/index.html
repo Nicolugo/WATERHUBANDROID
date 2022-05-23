@@ -203,4 +203,15 @@
             cleanup();
             const rom = await fetch(`./${e.target.value}`);
             const buf = await rom.arrayBuffer();
-          
+            init(buf);
+          };
+
+          input.addEventListener("change", onFileChange);
+
+          window.addEventListener("keydown", onKeydown);
+
+          window.addEventListener("keyup", onKeyup);
+
+          selector.addEventListener("change", onROMChange);
+
+          const addHandle
