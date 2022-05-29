@@ -230,4 +230,16 @@
             );
 
             el.addEventListener("mouseup", e => {
-   
+              return gb.keyUp(bit);
+            });
+            el.addEventListener(
+              "touchend",
+              e => {
+                e.preventDefault();
+                return gb.keyUp(bit);
+              },
+              true
+            );
+          };
+
+          addHand
