@@ -220,4 +220,14 @@
               return gb.keyDown(bit);
             });
             el.addEventListener(
-              "touchsta
+              "touchstart",
+              e => {
+                e.preventDefault();
+                navigator.vibrate && navigator.vibrate(30);
+                return gb.keyDown(bit);
+              },
+              true
+            );
+
+            el.addEventListener("mouseup", e => {
+   
