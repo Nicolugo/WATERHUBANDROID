@@ -26,4 +26,14 @@ window.onload = async () => {
     const ctx = canvas.getContext("2d");
     const image = ctx.createImageData(160, 144);
 
-    if (!buf
+    if (!buf) {
+      const rom = await fetch("./tobu.gb");
+      buf = await rom.arrayBuffer();
+    }
+    let gb = new GB(new Uint8Array(buf));
+
+    document.querySelector(".led").style.background = "red";
+
+    const frame = () => {
+      if (!gb) return;
+      
