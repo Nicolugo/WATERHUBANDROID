@@ -36,4 +36,16 @@ window.onload = async () => {
 
     const frame = () => {
       if (!gb) return;
-      
+      gb.next(image.data);
+      ctx.putImageData(image, 0, 0);
+      renderDebugInfo(gb);
+      window.requestAnimationFrame(frame);
+    };
+    frame();
+
+    const onKeydown = e => {
+      switch (e.key) {
+        case "z":
+          return gb.keyDown(0x01);
+        case "x":
+          return gb.keyDown
