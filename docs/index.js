@@ -48,4 +48,12 @@ window.onload = async () => {
         case "z":
           return gb.keyDown(0x01);
         case "x":
-          return gb.keyDown
+          return gb.keyDown(0x02);
+        case "Backspace":
+          return gb.keyDown(0x04);
+        case "Enter":
+          return gb.keyDown(0x08);
+        case "ArrowLeft":
+          return gb.keyDown(0x20);
+        case "ArrowUp":
+          return gb.keyDown(0
