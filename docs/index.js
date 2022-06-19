@@ -56,4 +56,18 @@ window.onload = async () => {
         case "ArrowLeft":
           return gb.keyDown(0x20);
         case "ArrowUp":
-          return gb.keyDown(0
+          return gb.keyDown(0x40);
+        case "ArrowRight":
+          return gb.keyDown(0x10);
+        case "ArrowDown":
+          return gb.keyDown(0x80);
+      }
+    };
+
+    const onKeyup = e => {
+      switch (e.key) {
+        case "z":
+          return gb.keyUp(0x01);
+        case "x":
+          return gb.keyUp(0x02);
+   
