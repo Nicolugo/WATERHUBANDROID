@@ -70,4 +70,12 @@ window.onload = async () => {
           return gb.keyUp(0x01);
         case "x":
           return gb.keyUp(0x02);
-   
+        case "Backspace":
+          return gb.keyUp(0x04);
+        case "Enter":
+          return gb.keyUp(0x08);
+        case "ArrowLeft":
+          return gb.keyUp(0x20);
+        case "ArrowUp":
+          return gb.keyUp(0x40);
+        case "Arr
