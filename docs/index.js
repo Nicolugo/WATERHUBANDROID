@@ -78,4 +78,14 @@ window.onload = async () => {
           return gb.keyUp(0x20);
         case "ArrowUp":
           return gb.keyUp(0x40);
-        case "Arr
+        case "ArrowRight":
+          return gb.keyUp(0x10);
+        case "ArrowDown":
+          return gb.keyUp(0x80);
+      }
+    };
+
+    const removeHandler = classname => {
+      const el = document.querySelector(`.${classname}`);
+      const elClone = el.cloneNode(true);
+      el.parentNode.repl
