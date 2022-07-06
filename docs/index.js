@@ -88,4 +88,12 @@ window.onload = async () => {
     const removeHandler = classname => {
       const el = document.querySelector(`.${classname}`);
       const elClone = el.cloneNode(true);
-      el.parentNode.repl
+      el.parentNode.replaceChild(elClone, el);
+    };
+
+    const cleanup = () => {
+      input.removeEventListener("change", onFileChange);
+      window.removeEventListener("keydown", onKeydown);
+      window.removeEventListener("keyup", onKeyup);
+      removeHandler("buttonA");
+      removeHandler("buttonB");
