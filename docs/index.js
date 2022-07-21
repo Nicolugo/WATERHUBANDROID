@@ -97,3 +97,15 @@ window.onload = async () => {
       window.removeEventListener("keyup", onKeyup);
       removeHandler("buttonA");
       removeHandler("buttonB");
+      removeHandler("buttonSelect");
+      removeHandler("buttonStart");
+      removeHandler("right");
+      removeHandler("left");
+      removeHandler("up");
+      removeHandler("down");
+      gb = null;
+    };
+
+    window.addEventListener("keydown", onKeydown);
+
+    window.a
