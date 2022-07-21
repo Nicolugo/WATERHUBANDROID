@@ -128,4 +128,17 @@ window.onload = async () => {
       el.addEventListener("mouseup", e => {
         return gb.keyUp(bit);
       });
-      el.addEventListe
+      el.addEventListener(
+        "touchend",
+        e => {
+          e.preventDefault();
+          return gb.keyUp(bit);
+        },
+        true
+      );
+    };
+
+    addHandler("buttonA", 0x01);
+    addHandler("buttonB", 0x02);
+    addHandler("buttonSelect", 0x04);
+    addHandler("but
