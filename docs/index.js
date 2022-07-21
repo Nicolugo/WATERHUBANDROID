@@ -108,4 +108,12 @@ window.onload = async () => {
 
     window.addEventListener("keydown", onKeydown);
 
-    window.a
+    window.addEventListener("keyup", onKeyup);
+
+    const addHandler = (classname, bit) => {
+      const el = document.querySelector(`.${classname}`);
+      el.addEventListener("mousedown", e => {
+        return gb.keyDown(bit);
+      });
+      el.addEventListener(
+     
