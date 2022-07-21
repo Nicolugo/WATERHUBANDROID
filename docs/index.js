@@ -116,4 +116,16 @@ window.onload = async () => {
         return gb.keyDown(bit);
       });
       el.addEventListener(
-     
+        "touchstart",
+        e => {
+          e.preventDefault();
+          navigator.vibrate && navigator.vibrate(30);
+          return gb.keyDown(bit);
+        },
+        true
+      );
+
+      el.addEventListener("mouseup", e => {
+        return gb.keyUp(bit);
+      });
+      el.addEventListe
