@@ -141,4 +141,13 @@ window.onload = async () => {
     addHandler("buttonA", 0x01);
     addHandler("buttonB", 0x02);
     addHandler("buttonSelect", 0x04);
-    addHandler("but
+    addHandler("buttonStart", 0x08);
+
+    addHandler("right", 0x10);
+    addHandler("left", 0x20);
+    addHandler("up", 0x40);
+    addHandler("down", 0x80);
+  };
+
+  init();
+};
