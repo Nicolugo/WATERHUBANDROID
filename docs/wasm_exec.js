@@ -381,3 +381,155 @@
 					"syscall/js.valueLoadString": (sp) => {
 						const str = loadValue(sp + 8);
 						loadSlice(sp + 16).set(str);
+					},
+
+					// func valueInstanceOf(v ref, t ref) bool
+					"syscall/js.valueInstanceOf": (sp) => {
+						mem().setUint8(sp + 24, loadValue(sp + 8) instanceof loadValue(sp + 16));
+					},
+
+					// func copyBytesToGo(dst []byte, src ref) (int, bool)
+					"syscall/js.copyBytesToGo": (sp) => {
+						const dst = loadSlice(sp + 8);
+            const src = loadValue(sp + 32);
+						if (!(src instanceof Uint8Array)) {
+							mem().setUint8(sp + 48, 0);
+							return;
+						}
+						const toCopy = src.subarray(0, dst.length);
+						dst.set(toCopy);
+						setInt64(sp + 40, toCopy.length);
+						mem().setUint8(sp + 48, 1);
+					},
+
+					// func copyBytesToJS(dst ref, src []byte) (int, bool)
+					"syscall/js.copyBytesToJS": (sp) => {
+						const dst = loadValue(sp + 8);
+            const src = loadSlice(sp + 16);
+            // bokuweb: Add Uint8ClampedArray
+						if (!(dst instanceof Uint8Array) && !(dst instanceof Uint8ClampedArray)) {
+							mem().setUint8(sp + 48, 0);
+							return;
+						}
+						const toCopy = src.subarray(0, dst.length);
+						dst.set(toCopy);
+						setInt64(sp + 40, toCopy.length);
+						mem().setUint8(sp + 48, 1);
+					},
+
+					"debug": (value) => {
+						console.log(value);
+					},
+				}
+			};
+		}
+
+		async run(instance) {
+			this._inst = instance;
+			this._values = [ // TODO: garbage collection
+				NaN,
+				0,
+				null,
+				true,
+				false,
+				global,
+				this,
+			];
+			this._refs = new Map();
+			this.exited = false;
+
+			const mem = new DataView(this._inst.exports.mem.buffer)
+
+			// Pass command line arguments and environment variables to WebAssembly by writing them to the linear memory.
+			let offset = 4096;
+
+			const strPtr = (str) => {
+				const ptr = offset;
+				const bytes = encoder.encode(str + "\0");
+				new Uint8Array(mem.buffer, offset, bytes.length).set(bytes);
+				offset += bytes.length;
+				if (offset % 8 !== 0) {
+					offset += 8 - (offset % 8);
+				}
+				return ptr;
+			};
+
+			const argc = this.argv.length;
+
+			const argvPtrs = [];
+			this.argv.forEach((arg) => {
+				argvPtrs.push(strPtr(arg));
+			});
+
+			const keys = Object.keys(this.env).sort();
+			argvPtrs.push(keys.length);
+			keys.forEach((key) => {
+				argvPtrs.push(strPtr(`${key}=${this.env[key]}`));
+			});
+
+			const argv = offset;
+			argvPtrs.forEach((ptr) => {
+				mem.setUint32(offset, ptr, true);
+				mem.setUint32(offset + 4, 0, true);
+				offset += 8;
+			});
+
+			this._inst.exports.run(argc, argv);
+			if (this.exited) {
+				this._resolveExitPromise();
+			}
+			await this._exitPromise;
+		}
+
+		_resume() {
+			if (this.exited) {
+				throw new Error("Go program has already exited");
+			}
+			this._inst.exports.resume();
+			if (this.exited) {
+				this._resolveExitPromise();
+			}
+		}
+
+		_makeFuncWrapper(id) {
+			const go = this;
+			return function () {
+				const event = { id: id, this: this, args: arguments };
+				go._pendingEvent = event;
+				go._resume();
+				return event.result;
+			};
+		}
+	}
+
+	if (
+		global.require &&
+		global.require.main === module &&
+		global.process &&
+		global.process.versions &&
+		!global.process.versions.electron
+	) {
+		if (process.argv.length < 3) {
+			console.error("usage: go_js_wasm_exec [wasm binary] [arguments]");
+			process.exit(1);
+		}
+
+		const go = new Go();
+		go.argv = process.argv.slice(2);
+		go.env = Object.assign({ TMPDIR: require("os").tmpdir() }, process.env);
+		go.exit = process.exit;
+		WebAssembly.instantiate(fs.readFileSync(process.argv[2]), go.importObject).then((result) => {
+			process.on("exit", (code) => { // Node.js exits if no event handler is pending
+				if (code === 0 && !go.exited) {
+					// deadlock, make Go print error and stack traces
+					go._pendingEvent = { id: 0 };
+					go._resume();
+				}
+			});
+			return go.run(result.instance);
+		}).catch((err) => {
+			console.error(err);
+			process.exit(1);
+		});
+	}
+})();
