@@ -30,4 +30,11 @@ func setup() (*Bus, *ram.RAM, *ram.RAM) {
 }
 
 func TestWRAMReadWrite(t *testing.T) {
-	ass
+	assert := assert.New(t)
+	b, wRAM, _ := setup()
+	b.WriteByte(0xC000, 0xA5)
+	b.WriteWord(0xC100, 0xDEAD)
+	assert.Equal(byte(0xA5), wRAM.Read(0x0000))
+	assert.Equal(byte(0xA5), b.ReadByte(0xC000))
+	assert.Equal(byte(0xAD), wRAM.Read(0x0100))
+	assert.Equal(byte(0xDE), wRAM.Re
