@@ -56,4 +56,8 @@ func TestShadowWRAMReadWrite(t *testing.T) {
 func TestZRAMReadWrite(t *testing.T) {
 	assert := assert.New(t)
 	b, _, hRAM := setup()
-	b.WriteByte
+	b.WriteByte(0xFF80, 0xA5)
+	b.WriteWord(0xFF90, 0xDEAD)
+	assert.Equal(byte(0xA5), hRAM.Read(0x0000))
+	assert.Equal(types.Word(0xDEAD), b.ReadWord(0xFF90))
+}
