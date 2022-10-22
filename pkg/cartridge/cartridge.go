@@ -36,4 +36,15 @@ type Cartridge struct {
   0x1C: ROM+MBC5+RUMBLE
   0x1D: ROM+MBC5+RUMBLE+SRAM
   0x1E: ROM+MBC5+RUMBLE+SRAM+BATT
-  
+  0x1F: Pocket Camera
+  0xFD: Bandai TAMA5
+  0xFE: Hudson HuC-3
+*/
+type CartridgeType byte
+
+const (
+	MBC_0                 CartridgeType = 0x00
+	MBC_1                               = 0x01
+	MBC_1_RAM                           = 0x02
+	MBC_1_RAM_BATT                      = 0x03
+	M
