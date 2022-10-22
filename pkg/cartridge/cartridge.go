@@ -52,4 +52,12 @@ const (
 	MBC_5                               = 0x19
 	MBC_5_RAM                           = 0x1A
 	MBC_5_RAM_BATT                      = 0x1B
-	MBC_5_RUMBLE                        = 
+	MBC_5_RUMBLE                        = 0x1C
+	MBC_5_RAM_RUMBLE                    = 0x1D
+	MBC_5_RAM_BATT_RUMBLE               = 0x1E
+)
+
+// NewCartridge is cartridge constructure
+func NewCartridge(buf []byte) (*Cartridge, error) {
+	title := strings.TrimSpace(string(buf[0x0134:0x0142]))
+	// romSize := 0x800
