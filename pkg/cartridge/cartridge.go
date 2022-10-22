@@ -47,4 +47,9 @@ const (
 	MBC_1                               = 0x01
 	MBC_1_RAM                           = 0x02
 	MBC_1_RAM_BATT                      = 0x03
-	M
+	MBC_3_RAM_BATT                      = 0x13
+	MBC_3_RAM_BATT_RTC                  = 0x10
+	MBC_5                               = 0x19
+	MBC_5_RAM                           = 0x1A
+	MBC_5_RAM_BATT                      = 0x1B
+	MBC_5_RUMBLE                        = 
