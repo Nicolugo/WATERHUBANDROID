@@ -60,4 +60,13 @@ const (
 // NewCartridge is cartridge constructure
 func NewCartridge(buf []byte) (*Cartridge, error) {
 	title := strings.TrimSpace(string(buf[0x0134:0x0142]))
-	// romSize := 0x800
+	// romSize := 0x8000 << buf[0x0148]
+	ramSize := getRAMSize(buf[0x0149])
+	cartridgeType := CartridgeType(buf[0x0147])
+	fmt.Println("cartridge type is ", cartridgeType)
+	var mbc MBC
+	switch cartridgeType {
+	case MBC_0:
+		mbc = NewMBC0(buf[0x0000:0x8000])
+	case MBC_1:
+		mbc = NewMBC1(buf, ramSize, fals
