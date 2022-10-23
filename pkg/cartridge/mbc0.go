@@ -18,4 +18,17 @@ func NewMBC0(data []byte) *MBC0 {
 	return m
 }
 
-func (m *MBC0) Write(
+func (m *MBC0) Write(addr types.Word, value byte) {
+}
+
+func (m *MBC0) Read(addr types.Word) byte {
+	return m.rom.Read(uint32(addr))
+}
+
+func (m *MBC0) switchROMBank(bank int) {
+	// nop
+}
+
+func (m *MBC0) switchRAMBank(bank int) {
+	// nop
+}
