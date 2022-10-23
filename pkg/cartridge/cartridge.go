@@ -69,4 +69,22 @@ func NewCartridge(buf []byte) (*Cartridge, error) {
 	case MBC_0:
 		mbc = NewMBC0(buf[0x0000:0x8000])
 	case MBC_1:
-		mbc = NewMBC1(buf, ramSize, fals
+		mbc = NewMBC1(buf, ramSize, false)
+	case MBC_1_RAM:
+		mbc = NewMBC1(buf, ramSize, false)
+	case MBC_1_RAM_BATT:
+		mbc = NewMBC1(buf, ramSize, true)
+	}
+
+	return &Cartridge{
+		mbc:     mbc,
+		Title:   title,
+		ROM:     buf,
+		RAMSize: ramSize,
+	}, nil
+}
+
+//RAM size:
+// 0 - None
+// 1 - 16kBit = 2kB = 1 bank
+// 2 - 64kBit = 
