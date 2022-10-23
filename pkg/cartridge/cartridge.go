@@ -87,4 +87,17 @@ func NewCartridge(buf []byte) (*Cartridge, error) {
 //RAM size:
 // 0 - None
 // 1 - 16kBit = 2kB = 1 bank
-// 2 - 64kBit = 
+// 2 - 64kBit = 8kB = 1 bank
+// 3 - 256kBit = 32kB = 4 banks
+// 4 - 1MBit =128kB =16 banks
+func getRAMSize(size byte) int {
+	switch size {
+	case 0x00:
+		return 0
+	case 0x01:
+		return 2 * 1024
+	case 0x02:
+		return 8 * 1024
+	case 0x03:
+		return 32 * 1024
+	case 0x04:
