@@ -101,3 +101,15 @@ func getRAMSize(size byte) int {
 	case 0x03:
 		return 32 * 1024
 	case 0x04:
+		return 128 * 1024
+	}
+	return 0
+}
+
+func (c *Cartridge) ReadByte(addr types.Word) byte {
+	return c.mbc.Read(addr)
+}
+
+func (c *Cartridge) WriteByte(addr types.Word, data byte) {
+	c.mbc.Write(addr, data)
+}
