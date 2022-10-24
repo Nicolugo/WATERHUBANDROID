@@ -32,4 +32,9 @@ const (
 	// Writing a value (XXXXXXBB - X = Don't care, B = bank select bits) into 4000-5FFF area
 	// will set the two most significant ROM address lines.
 	// * NOTE: The Super Smart Card doesn't require this operation because it's RAM bank is ALWAYS enabled.
-	// Include this operation anyway to allow your code to work with bo
+	// Include this operation anyway to allow your code to work with both
+	ROM16mRAM8kMode MBC1MemoryMode = "ROM16M/RAM8K"
+	// ROM4mRAM32kMode is 4/32 memory mode
+	// Writing a value (XXXXXXBB - X = Don't care, B = bank select bits) into 4000-5FFF area
+	// will select an appropriate RAM bank at A000-C000.
+	// Before you can read 
