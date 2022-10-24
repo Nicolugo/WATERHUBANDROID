@@ -37,4 +37,7 @@ const (
 	// ROM4mRAM32kMode is 4/32 memory mode
 	// Writing a value (XXXXXXBB - X = Don't care, B = bank select bits) into 4000-5FFF area
 	// will select an appropriate RAM bank at A000-C000.
-	// Before you can read 
+	// Before you can read or write to a RAM bank you have to enable it by writing a XXXX1010 into 0000-1FFF area*.
+	// To disable RAM bank operations write any value but XXXX1010 into 0000-1FFF area.
+	// Disabling a RAM bank probably protects that bank from false writes during power down of the GameBoy.
+	// (NOTE: N
