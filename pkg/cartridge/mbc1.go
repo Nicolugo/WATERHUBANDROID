@@ -40,4 +40,14 @@ const (
 	// Before you can read or write to a RAM bank you have to enable it by writing a XXXX1010 into 0000-1FFF area*.
 	// To disable RAM bank operations write any value but XXXX1010 into 0000-1FFF area.
 	// Disabling a RAM bank probably protects that bank from false writes during power down of the GameBoy.
-	// (NOTE: N
+	// (NOTE: Nintendo suggests values $0A to enable and $00 to disable RAM bank!!)
+	ROM4mRAM32kMode = "ROM4M/RAM32K"
+)
+
+// NewMBC1 constracts MBC1
+func NewMBC1(buf []byte, ramSize int, hasBattery bool) *MBC1 {
+	m := &MBC1{
+		selectedROMBank: 1,
+	}
+	m.memoryMode = ROM16mRAM8kMode
+	m.hasBatt
