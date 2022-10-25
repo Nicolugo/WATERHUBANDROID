@@ -50,4 +50,18 @@ func NewMBC1(buf []byte, ramSize int, hasBattery bool) *MBC1 {
 		selectedROMBank: 1,
 	}
 	m.memoryMode = ROM16mRAM8kMode
-	m.hasBatt
+	m.hasBattery = hasBattery
+	m.RAMSize = ramSize
+	if ramSize > 0 {
+		m.ramEnabled = true
+		m.selectedRAMBank = 0
+		m.ram = ram.NewRAM(0x8000)
+	}
+	m.rom = rom.NewROM(buf)
+
+	return m
+}
+
+func (m *MBC1) Write(addr types.Word, value byte) {
+	switch {
+	// 4 bits wide; val
