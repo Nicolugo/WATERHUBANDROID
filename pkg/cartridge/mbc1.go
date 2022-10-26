@@ -76,4 +76,17 @@ func (m *MBC1) Write(addr types.Word, value byte) {
 	case addr < 0x4000:
 		m.switchROMBank(int(value & 0x1F))
 	case addr < 0x6000:
-		if
+		if m.romBanking {
+			m.switchROMBank((m.selectedROMBank & 0x1F) | int(value&0xE0))
+			break
+		}
+		m.switchRAMBank(int(value & 0x03))
+
+	case addr < 0x8000:
+		m.romBanking = value&0x01 == 0x00
+		if m.romBanking {
+			m.switchRAMBank(0)
+			break
+		}
+	case addr < 0xC000:
+		if m.ramEnabl
