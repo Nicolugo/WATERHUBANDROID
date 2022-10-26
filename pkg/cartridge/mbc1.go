@@ -89,4 +89,15 @@ func (m *MBC1) Write(addr types.Word, value byte) {
 			break
 		}
 	case addr < 0xC000:
-		if m.ramEnabl
+		if m.ramEnabled {
+			switch m.memoryMode {
+			case ROM4mRAM32kMode:
+				m.ram.Write(types.Word((int(addr)+m.selectedRAMBank*0x2000)-0xA000), value)
+			case ROM16mRAM8kMode:
+				m.ram.Write(types.Word((int(addr))-0xA000), value)
+			}
+		}
+	}
+}
+
+func (m *MBC1) Read(addr types.W
