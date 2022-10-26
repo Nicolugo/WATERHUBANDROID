@@ -70,4 +70,10 @@ func (m *MBC1) Write(addr types.Word, value byte) {
 			m.ramEnabled = value&0x0F == 0x0A
 		}
 		// Writing a value (XXXBBBBB - X = Don't cares, B = bank select bits) into 2000-3FFF area
-		// will select a
+		// will select an appropriate ROM bank at 4000-7FFF
+		// Values of 0 and 1 do the same thing and point to ROM bank 1.
+		// Rom bank 0 is not accessible from 4000-7FFF and can only be read from 0000-3FFF.
+	case addr < 0x4000:
+		m.switchROMBank(int(value & 0x1F))
+	case addr < 0x6000:
+		if
