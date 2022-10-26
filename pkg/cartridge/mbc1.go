@@ -64,4 +64,10 @@ func NewMBC1(buf []byte, ramSize int, hasBattery bool) *MBC1 {
 
 func (m *MBC1) Write(addr types.Word, value byte) {
 	switch {
-	// 4 bits wide; val
+	// 4 bits wide; value of 0x0A enables RAM, any other value disables
+	case addr < 0x2000:
+		if m.memoryMode == ROM4mRAM32kMode {
+			m.ramEnabled = value&0x0F == 0x0A
+		}
+		// Writing a value (XXXBBBBB - X = Don't cares, B = bank select bits) into 2000-3FFF area
+		// will select a
