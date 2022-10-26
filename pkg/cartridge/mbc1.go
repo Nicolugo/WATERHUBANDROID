@@ -100,4 +100,13 @@ func (m *MBC1) Write(addr types.Word, value byte) {
 	}
 }
 
-func (m *MBC1) Read(addr types.W
+func (m *MBC1) Read(addr types.Word) byte {
+	if addr < 0x4000 {
+		return m.rom.Read(uint32(addr))
+	} else if addr < 0x8000 {
+		base := uint32(m.selectedROMBank * 0x4000)
+		return m.rom.Read(base + uint32(addr) - 0x4000)
+	} else if addr < 0xC000 {
+		if m.ramEnabled {
+			switch m.memoryMode {
+			ca
