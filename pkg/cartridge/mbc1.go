@@ -109,4 +109,16 @@ func (m *MBC1) Read(addr types.Word) byte {
 	} else if addr < 0xC000 {
 		if m.ramEnabled {
 			switch m.memoryMode {
-			ca
+			case ROM4mRAM32kMode:
+				return m.ram.Read(types.Word((int(addr) + m.selectedRAMBank*0x2000) - 0xA000))
+			case ROM16mRAM8kMode:
+				return m.ram.Read(types.Word((int(addr)) - 0xA000))
+			}
+		}
+	}
+	return 0x00
+}
+
+func (m *MBC1) switchROMBank(bank int) {
+	m.selectedROMBank = bank
+	if m.sele
