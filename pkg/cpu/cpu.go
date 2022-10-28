@@ -694,3 +694,246 @@ func (cpu *CPU) inc_nn(r1, r2 *types.Register) {
 // Flags affected:
 //  Z - Set if result is zero.
 //  N - Reset.
+//  H - Set if carry from bit 3.
+//  C - Not affected
+func (cpu *CPU) inc_n(r *types.Register) {
+	*r = cpu.inc(*r)
+}
+
+func (cpu *CPU) dec_n(r *types.Register) {
+	// cpu.logger.Info("dec_n", cpu.dec(*r))
+	*r = cpu.dec(*r)
+}
+
+func (cpu *CPU) rlca() {
+	computed := cpu.Regs.A << 1
+	if cpu.Regs.A&0x80 == 0x80 {
+		cpu.setFlag(C)
+		computed ^= 0x01
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.clearFlag(Z)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.Regs.A = computed
+}
+
+func (cpu *CPU) ldnn_sp(operands []byte) {
+	addr := utils.Bytes2Word(operands[1], operands[0])
+	cpu.bus.WriteWord(addr, cpu.SP)
+}
+
+func (cpu *CPU) addhl_rr(r1, r2 *byte) {
+	hl := cpu.getHL()
+	rr := utils.Bytes2Word(*r1, *r2)
+	result := cpu.addWords(hl, rr)
+	cpu.Regs.H, cpu.Regs.L = utils.Word2Bytes(result)
+}
+
+// LD dest,(r1, r2)
+// Description:
+//  Put value of (word(r1, r2)) to dest
+// Use with:
+//  r1,r2 = A,B,C,D,E,H,L
+//  dest = A,B,C,D,E,H,L
+func (cpu *CPU) ldr_rr(r1 byte, r2 byte, dest *byte) {
+	addr := utils.Bytes2Word(r1, r2)
+	*dest = cpu.bus.ReadByte(addr)
+}
+
+// LD A,n
+// Description:
+//  Put value n into A.
+// Use with:
+//  n = A
+//  nn = two byte immediate value. (LS byte first.)
+func (cpu *CPU) lda_nn(operands []byte) {
+	addr := utils.Bytes2Word(operands[1], operands[0])
+	cpu.Regs.A = cpu.bus.ReadByte(addr)
+}
+
+// DEC nn
+// Description:
+//  Decrement register nn.
+//  Use with:
+//   nn = BC,DE,HL,SP
+//  Flags affected:
+//   None.
+func (cpu *CPU) dec_nn(r1, r2 *types.Register) {
+	*r1, *r2 = utils.Word2Bytes(utils.Bytes2Word(*r1, *r2) - 1)
+}
+
+// RRCA
+// Description:
+//  Rotate A right. Old bit 0 to Carry flag.
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 0 data.
+func (cpu *CPU) rrca() {
+	computed := cpu.Regs.A >> 1
+	if cpu.Regs.A&0x01 == 0x01 {
+		cpu.setFlag(C)
+		computed ^= 0x80
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.clearFlag(Z)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.Regs.A = computed
+}
+
+// Stop
+// The STOP command halts the GameBoy processor
+// and screen until any button is pressed. The GB
+// and GBP screen goes white with a single dark
+// horizontal line. The GBC screen goes black.
+func (cpu *CPU) stop() {
+	cpu.stopped = true
+}
+
+// RLA
+// Description:
+//  Rotate A left through Carry flag.
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 7 data.
+func (cpu *CPU) rla() {
+	bit7 := false
+	computed := cpu.Regs.A
+	if computed&0x80 == 0x80 {
+		bit7 = true
+	}
+	computed = computed << 1
+	if cpu.isSet(C) {
+		computed ^= 0x01
+	}
+	if bit7 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.clearFlag(Z)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.Regs.A = computed
+}
+
+//JR n
+// Description:
+//  Add n to current address and jump to it.
+// Use with:
+//  n = one byte signed immediate value
+func (cpu *CPU) jr_n(operands []byte) {
+	v := int8(operands[0])
+	if v == 0x00 {
+		return
+	}
+	if v < 0 {
+		cpu.PC -= types.Word(-v)
+	} else {
+		cpu.PC += types.Word(v)
+	}
+
+}
+
+//RRA
+// Description:
+//  Rotate A right through Carry flag.
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 0 data.
+func (cpu *CPU) rra() {
+	bit0 := false
+	computed := cpu.Regs.A
+
+	if computed&0x01 == 0x01 {
+		bit0 = true
+	}
+	computed = computed >> 1
+
+	if cpu.isSet(C) {
+		computed ^= 0x80
+	}
+	if bit0 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.clearFlag(Z)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.Regs.A = computed
+}
+
+// JR cc, n
+// If following condition is true then add n to current
+// address and jump to it:
+// n = one byte signed immediate value
+// cc = NZ, Jump if Z flag is reset.
+// cc = Z, Jump if Z flag is set.
+// cc = NC, Jump if C flag is reset.
+// cc = C, Jump if C flag is set.
+func (cpu *CPU) jrcc_n(flag flags, isSet bool, operands []byte) {
+	n := int8(operands[0])
+	if cpu.isSet(flag) == isSet {
+		if n != 0x00 {
+			if n < 0 {
+				cpu.PC -= types.Word(-n)
+			} else {
+				cpu.PC += types.Word(n)
+			}
+		}
+	}
+}
+
+// LD (HL+),A
+// Description:
+//  Put A into memory address HL. Increment HL.
+//  Same as: LD (HL),A - INC HL
+func (cpu *CPU) ldihl_a() {
+	hl := types.Word(utils.Bytes2Word(cpu.Regs.H, cpu.Regs.L))
+	cpu.bus.WriteByte(hl, cpu.Regs.A)
+	hl++
+	cpu.toHLRegs(hl)
+}
+
+// DAA
+// Description:
+//  Decimal adjust register A.
+//  This instruction adjusts register A so that the
+//  correct representation of Binary Coded Decimal (BCD)
+//  is obtained.
+// Flags affected:
+//  Z - Set if register A is zero.
+//  N - Not affected.
+//  H - Reset.
+//  C - Set or reset according to operation.
+func (cpu *CPU) daa() {
+	a := types.Word(cpu.Regs.A)
+	if cpu.isSet(N) == false {
+		if cpu.isSet(H) || a&0x0F > 9 {
+			a += 0x06
+		}
+		if cpu.isSet(C) || a > 0x9F {
+			a += 0x60
+		}
+	} else {
+		if cpu.isSet(H) {
+			a = (a - 0x06) & 0xFF
+		}
+		if cpu.isSet(C) {
+			a -= 0x60
+		}
+	}
+	cpu.clearFlag(H)
+	if a&0x100 == 0x100 {
+		cpu.setFlag(C)
+	}
