@@ -121,4 +121,11 @@ func (m *MBC1) Read(addr types.Word) byte {
 
 func (m *MBC1) switchROMBank(bank int) {
 	m.selectedROMBank = bank
-	if m.sele
+	if m.selectedROMBank == 0x00 || m.selectedROMBank == 0x20 || m.selectedROMBank == 0x40 || m.selectedROMBank == 0x60 {
+		m.selectedROMBank++
+	}
+}
+
+func (m *MBC1) switchRAMBank(bank int) {
+	m.selectedRAMBank = bank
+}
