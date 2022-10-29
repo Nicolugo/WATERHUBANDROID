@@ -937,3 +937,270 @@ func (cpu *CPU) daa() {
 	if a&0x100 == 0x100 {
 		cpu.setFlag(C)
 	}
+	a &= 0xFF
+	cpu.applyZeroBy(byte(a))
+	cpu.Regs.A = byte(a)
+}
+
+// LDI A,(HL)
+// Description:
+// Put value at address HL into A. Increment HL.
+//  Same as: LD A,(HL) - INC HL
+func (cpu *CPU) ldia_hl() {
+	hl := cpu.getHL()
+	cpu.Regs.A = cpu.bus.ReadByte(hl)
+	hl++
+	cpu.toHLRegs(hl)
+}
+
+//CPL
+// Description:
+//  Complement A register. (Flip all bits.)
+// Flags affected:
+//  Z - Not affected.
+//  N - Set.
+//  H - Set.
+//  C - Not affected.
+func (cpu *CPU) cpl() {
+	cpu.Regs.A = ^cpu.Regs.A
+	cpu.setFlag(N)
+	cpu.setFlag(H)
+}
+
+// LD SP,nn
+// Description:
+//  Put value nn into n.
+// Use with:
+//  nn = 16 bit immediate value
+func (cpu *CPU) ldsp_nn(operands []byte) {
+	cpu.SP = utils.Bytes2Word(operands[1], operands[0])
+}
+
+// LDD (HL),A
+// Description:
+//  Put A into memory address HL. Decrement HL.
+func (cpu *CPU) lddhl_a() {
+	hl := cpu.getHL()
+	cpu.bus.WriteByte(hl, cpu.Regs.A)
+	hl--
+	cpu.toHLRegs(hl)
+}
+
+// Description:
+//  Increment register SP.
+// Flags affected:
+//  None.
+func (cpu *CPU) inc_sp() {
+	cpu.SP = (cpu.SP + 1) & 0xFFFF
+}
+
+//  INC (HL)
+// Description:
+//  Increment value pointed HL.
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Set if carry from bit 3.
+//  C - Not affected.
+func (cpu *CPU) inc_hl() {
+	hl := cpu.getHL()
+	v := cpu.bus.ReadByte(hl)
+	result := cpu.inc(v)
+	cpu.bus.WriteByte(hl, result)
+}
+
+//DEC (HL)
+// Description:
+//  Decrement value pointed HL.
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Set if carry from bit 3.
+//  C - Not affected.
+func (cpu *CPU) dec_hl() {
+	hl := cpu.getHL()
+	v := cpu.bus.ReadByte(hl)
+	result := cpu.dec(v)
+	cpu.bus.WriteByte(hl, result)
+}
+
+//LD (HL),n
+// Description:
+// Put value operands[0] into (HL)
+func (cpu *CPU) ldhl_n(operands []byte) {
+	hl := cpu.getHL()
+	cpu.bus.WriteByte(hl, operands[0])
+}
+
+//SCF
+// Description:
+//  Set Carry flag.
+// Flags affected:
+//  Z - Not affected.
+//  N - Reset.
+//  H - Reset.
+//  C - Set.
+func (cpu *CPU) scf() {
+	cpu.setFlag(C)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+}
+
+//ADD HL,SP
+// Description:
+//  Add SP to HL.
+// Use with:
+// Flags affected:
+//  Z - Not affected.
+//  N - Reset.
+//  H - Set if carry from bit 11.
+//  C - Set if carry from bit 15.
+func (cpu *CPU) addhl_sp() {
+	hl := cpu.getHL()
+	result := cpu.addWords(hl, cpu.SP)
+	cpu.toHLRegs(result)
+}
+
+// LDD A,(HL)
+// Description:
+//  Put value at address HL into A. Decrement HL.
+//  Same as: LD A,(HL) - DEC HL
+func (cpu *CPU) ldda_hl() {
+	hl := cpu.getHL()
+	cpu.Regs.A = cpu.bus.ReadByte(hl)
+	hl--
+	cpu.toHLRegs(hl)
+}
+
+// Description:
+//  Decrement register SP.
+// Flags affected:
+//  None.
+func (cpu *CPU) dec_sp() {
+	cpu.SP = (cpu.SP - 1) & 0xFFFF
+}
+
+// INC n
+// Description:
+//  Increment register n.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Set if carry from bit 3.
+//  C - Not affected.
+func (cpu *CPU) inc_r(r *types.Register) {
+	*r = cpu.inc(*r)
+}
+
+// DEC n
+// Description:
+//  Decrement register n.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if reselt is zero.
+//  N - Set.
+//  H - Set if no borrow from bit 4.
+//  C - Not affected.
+func (cpu *CPU) dec_r(r *types.Register) {
+	*r = cpu.dec(*r)
+}
+
+// LD A,n
+// Description:
+//  Put value n into A.
+// Use with:
+//  n = A,B,C,D,E,H,L,(BC),(DE),(HL),(nn),#
+//  nn = two byte immediate value. (LS byte first.)
+func (cpu *CPU) lda_n(operands []byte) {
+	cpu.Regs.A = operands[0]
+}
+
+// CCF
+// Description:
+//  Complement carry flag.
+//  If C flag is set, then reset it.
+//  If C flag is reset, then set it.
+// Flags affected:
+//  Z - Not affected.
+//  N - Reset.
+//  H - Reset.
+//  C - Complemented.
+func (cpu *CPU) ccf() {
+	if cpu.isSet(C) {
+		cpu.clearFlag(C)
+	} else {
+		cpu.setFlag(C)
+	}
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+}
+
+// LD r1,r2
+// Description:
+//  Put value r2 into r1.
+// Use with:
+//  r1,r2 = A,B,C,D,E,H,L
+func (cpu *CPU) ldrr(r1 *types.Register, r2 *types.Register) {
+	*r1 = *r2
+}
+
+// HALT
+// Description:
+//  Power down CPU until an interrupt occurs. Use this
+//  when ever possible to reduce energy consumption.
+func (cpu *CPU) halt() {
+	cpu.halted = true
+}
+
+// ADD A,n
+// Description:
+//  Add n to A.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL),#
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Set if carry from bit 3.
+//  C - Set if carry from bit 7.
+func (cpu *CPU) adda_n(r byte) {
+	cpu.Regs.A = cpu.addBytes(cpu.Regs.A, r)
+}
+
+// ADC A,n
+// Description:
+//  Add n + Carry flag to A.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL),#
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Set if carry from bit 3.
+//  C - Set if carry from bit 7.
+func (cpu *CPU) adca_n(n byte) {
+	carry := uint(0)
+	if cpu.isSet(C) {
+		carry = 1
+	}
+	if ((cpu.Regs.A & 0xF) + (n & 0xF) + byte(carry)) > 0xF {
+		cpu.setFlag(H)
+	} else {
+		cpu.clearFlag(H)
+	}
+	if ((uint(cpu.Regs.A & 0xFF)) + (uint(n) & 0xFF) + carry) > 0xFF {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.clearFlag(N)
+	cpu.Regs.A += n + byte(carry)
+	cpu.applyZeroBy(cpu.Regs.A)
+}
+
+// SUB n
+// Description:
+//  Subtract n from A.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL),#
