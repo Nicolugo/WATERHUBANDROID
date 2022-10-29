@@ -1485,3 +1485,280 @@ func (cpu *CPU) addsp_n(operands []byte) {
 	} else {
 		cpu.clearFlag(C)
 	}
+
+	if (c & 0x10) == 0x10 {
+		cpu.setFlag(H)
+	} else {
+		cpu.clearFlag(H)
+	}
+	cpu.clearFlag(Z)
+	cpu.clearFlag(N)
+}
+
+// JP (HL)
+// Description:
+//  Jump to address contained in HL.
+func (cpu *CPU) jp_hl() {
+	cpu.PC = utils.Bytes2Word(cpu.Regs.H, cpu.Regs.L)
+}
+
+// LD n,A
+// Description:
+//  Put value A into n.
+// Use with:
+//  n = A,B,C,D,E,H,L,(BC),(DE),(HL),(nn)
+//  nn = two byte immediate value. (LS byte first.)
+func (cpu *CPU) ldnn_r(operands []byte) {
+	addr := utils.Bytes2Word(operands[1], operands[0])
+	cpu.bus.WriteByte(addr, cpu.Regs.A)
+}
+
+// LDH A,(n)
+// Description:
+//  Put memory address $FF00+n into A.
+// Use with:
+//  n = one byte immediate value.
+func (cpu *CPU) ldha_n(operands []byte) {
+	cpu.Regs.A = cpu.bus.ReadByte(types.Word(0xFF00) + types.Word(operands[0]))
+}
+
+// LD A,(C)
+// Description:
+//  Put value at address $FF00 + register C into A.
+//  Same as: LD A,($FF00+C)
+func (cpu *CPU) lda_c() {
+	cpu.Regs.A = cpu.bus.ReadByte(types.Word(0xFF00) + types.Word(cpu.Regs.C))
+}
+
+// DI
+// Description:
+//  This instruction disables interrupts but not
+//  immediately. Interrupts are disabled after
+//  instruction after DI is executed.
+// Flags affected:
+//  None.
+func (cpu *CPU) di() {
+	cpu.irq.Disable()
+}
+
+// EI
+// Description:
+//  Enable interrupts. This intruction enables interrupts
+//  but not immediately. Interrupts are enabled after
+//  instruction after EI is executed.
+// Flags affected:
+//  None.
+func (cpu *CPU) ei() {
+	cpu.irq.Enable()
+}
+
+// LD HL,SP+n / LDHL SP,n
+// Description:
+//  Put SP + n effective address into HL.
+// Use with:
+//  n = one byte signed immediate value.
+// Flags affected:
+//  Z - Reset.
+//  N - Reset.
+//  H - Set or reset according to operation.
+//  C - Set or reset according to operation.
+func (cpu *CPU) ldhlsp_n(n byte) {
+	var hl types.Word
+	if n > 127 {
+		hl = cpu.SP - types.Word(-n)
+	} else {
+		hl = cpu.SP + types.Word(n)
+	}
+	c := types.Word(cpu.SP ^ types.Word(n) ^ ((cpu.SP + types.Word(n)) & 0xffff))
+	if (c & 0x100) == 0x100 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	if (c & 0x10) == 0x10 {
+		cpu.setFlag(H)
+	} else {
+		cpu.clearFlag(H)
+	}
+	cpu.clearFlag(Z)
+	cpu.clearFlag(N)
+	cpu.Regs.H, cpu.Regs.L = utils.Word2Bytes(hl)
+}
+
+// LD SP,HL
+// Description:
+//  Put HL into Stack Pointer (SP).
+func (cpu *CPU) ldsp_hl() {
+	cpu.SP = utils.Bytes2Word(cpu.Regs.H, cpu.Regs.L)
+}
+
+// RLC n
+// Description:
+//  Rotate n left. Old bit 7 to Carry flag.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+// Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 7 data.
+func (cpu *CPU) rlc(v byte) byte {
+	rotated := v << 1
+	if v&0x80 == 0x80 {
+		cpu.setFlag(C)
+		rotated ^= 0x01
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.applyZeroBy(rotated)
+	return rotated
+}
+
+func (cpu *CPU) rlc_n(r *types.Register) {
+	*r = cpu.rlc(*r)
+}
+
+func (cpu *CPU) rlc_hl() {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.rlc(v))
+}
+
+//  RRC n
+//  Description:
+//   Rotate n right. Old bit 0 to Carry flag.
+//  Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+//  Flags affected:
+//   Z - Set if result is zero.
+//   N - Reset.
+//   H - Reset.
+//   C - Contains old bit 0 data.
+func (cpu *CPU) rrc(v byte) byte {
+	rotated := v >> 1
+	if v&0x01 == 0x01 {
+		cpu.setFlag(C)
+		rotated ^= 0x80
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.applyZeroBy(rotated)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	return rotated
+}
+
+func (cpu *CPU) rrc_n(r *types.Register) {
+	*r = cpu.rrc(*r)
+}
+
+func (cpu *CPU) rrc_hl() {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.rrc(v))
+}
+
+//  RL n
+// Description:
+//  Rotate n left through Carry flag.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 7 data.
+
+func (cpu *CPU) rl(v byte) byte {
+	rotated := v << 1
+	if cpu.isSet(C) {
+		rotated ^= 0x01
+	}
+	if v&0x80 == 0x80 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.applyZeroBy(rotated)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	return rotated
+}
+
+func (cpu *CPU) rl_n(r *types.Register) {
+	*r = cpu.rl(*r)
+}
+
+func (cpu *CPU) rl_hl() {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.rl(v))
+}
+
+// RR n
+// Description:
+//  Rotate n right through Carry flag.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 0 data.
+func (cpu *CPU) rr(v byte) byte {
+	rotated := v >> 1
+	if cpu.isSet(C) {
+		rotated ^= 0x80
+	}
+	if v&0x01 == 0x01 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.applyZeroBy(rotated)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	return rotated
+}
+
+func (cpu *CPU) rr_n(r *types.Register) {
+	*r = cpu.rr(*r)
+}
+
+func (cpu *CPU) rr_hl() {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.rr(v))
+}
+
+//  SLA n
+// Description:
+//  Shift n left into Carry. LSB of n set to 0.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 7 data.
+func (cpu *CPU) sla(v byte) byte {
+	shifted := v << 1
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.applyZeroBy(shifted)
+	if v&0x80 == 0x80 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	return shifted
+}
+
+func (cpu *CPU) sla_n(r *types.Register) {
+	*r = cpu.sla(*r)
+}
+
+func (cpu *CPU) sla_hl() {
+	addr := cpu.getHL()
