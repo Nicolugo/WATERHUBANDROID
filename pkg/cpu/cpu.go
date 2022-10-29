@@ -1204,3 +1204,284 @@ func (cpu *CPU) adca_n(n byte) {
 //  Subtract n from A.
 // Use with:
 //  n = A,B,C,D,E,H,L,(HL),#
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Set.
+//  H - Set if no borrow from bit 4.
+//  C - Set if no borrow.
+func (cpu *CPU) sub_n(v byte) {
+	cpu.Regs.A = cpu.subBytes(cpu.Regs.A, v)
+}
+
+// SBC A,n
+// Description:
+//  Subtract n + Carry flag from A.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL),#
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Set.
+//  H - Set if no borrow from bit 4.
+//  C - Set if no borrow.
+func (cpu *CPU) subca_n(v byte) {
+	a := cpu.Regs.A
+	computed := int(cpu.Regs.A)
+	computed -= int(v)
+	if cpu.isSet(C) {
+		computed--
+	}
+	if computed < 0 {
+		// cpu.setFlag(C)
+		cpu.Regs.F = 0x50
+	} else {
+		cpu.Regs.F = 0x40
+	}
+	// cpu.setFlag(N)
+	cpu.applyZeroBy(uint8(computed))
+
+	if ((byte(computed) ^ v ^ a) & 0x10) == 0x10 {
+		cpu.setFlag(H)
+	} else {
+		cpu.clearFlag(H)
+	}
+
+	cpu.Regs.A = byte(computed)
+}
+
+// AND n
+// Description:
+//  Logically AND n with A, result in A.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL),#
+// Flags affected:
+//  Z - Set if result is zero.`m`
+//  N - Reset.
+//  H - Set.
+//  C - Reset.
+func (cpu *CPU) and_n(v byte) {
+	cpu.Regs.A = cpu.and(cpu.Regs.A, v)
+}
+
+// XOR n
+// Description:
+//  Logical exclusive OR n with register A, result in A.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL),#
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Reset.
+func (cpu *CPU) xor_n(v byte) {
+	cpu.Regs.A = cpu.xor(cpu.Regs.A, v)
+}
+
+// OR n
+// Description:
+//  Logical OR n with register A, result in A.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL),#
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Reset.
+func (cpu *CPU) or_n(v byte) {
+	cpu.Regs.A = cpu.or(cpu.Regs.A, v)
+}
+
+// CP n
+// Description:
+//  Compare A with n. This is basically an A - n
+//  subtraction instruction but the results are thrown
+//  away.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL),#
+// Flags affected:
+//  Z - Set if result is zero. (Set if A = n.)
+//  N - Set.
+//  H - Set if no borrow from bit 4.
+//  C - Set for no borrow. (Set if A < n.)
+func (cpu *CPU) cp_n(v byte) {
+	cpu.setFlag(N)
+	if cpu.Regs.A&0xF < v&0xF {
+		cpu.setFlag(H)
+	} else {
+		cpu.clearFlag(H)
+	}
+	if cpu.Regs.A < v {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	cpu.applyZeroBy(cpu.Regs.A - v)
+}
+
+// RET cc
+// Description:
+//  Return if following condition is true:
+// Use with:
+//  cc = NZ, Return if Z flag is reset.
+//  cc = Z, Return if Z flag is set.
+//  cc = NC, Return if C flag is reset.
+//  cc = C, Return if C flag is set.
+func (cpu *CPU) retcc(flag flags, isSet bool) {
+	if cpu.isSet(flag) == isSet {
+		cpu.pop2PC()
+	}
+}
+
+// POP nn
+// Description:
+//  Pop two bytes off stack into register pair nn.
+//  Increment Stack Pointer (SP) twice.
+// Use with:
+//  nn = AF,BC,DE,HL
+func (cpu *CPU) pop_nn(r1, r2 *types.Register) {
+	*r2 = cpu.pop()
+	*r1 = cpu.pop()
+}
+
+func (cpu *CPU) pop_af() {
+	cpu.Regs.F = cpu.pop() & 0xF0
+	cpu.Regs.A = cpu.pop()
+}
+
+// JP cc,nn
+// Description:
+//  Jump to address n if following condition is true:
+//  cc = NZ, Jump if Z flag is reset.
+//  cc = Z, Jump if Z flag is set.
+//  cc = NC, Jump if C flag is reset.
+//  cc = C, Jump if C flag is set.
+// Use with:
+//  nn = two byte immediate value. (LS byte first.)
+func (cpu *CPU) jpcc_nn(flag flags, isSet bool, operands []byte) {
+	if cpu.isSet(flag) == isSet {
+		cpu.PC = utils.Bytes2Word(operands[1], operands[0])
+	}
+}
+
+// JP nn
+// Description:
+//  Jump to address nn.
+// Use with:
+//  nn = two byte immediate value. (LS byte first.)
+func (cpu *CPU) jp_nn(operands []byte) {
+	cpu.PC = utils.Bytes2Word(operands[1], operands[0])
+}
+
+// CALL cc,nn
+// Description:
+//  Call address n if following condition is true:
+//  cc = NZ, Call if Z flag is reset.
+//  cc = Z, Call if Z flag is set.
+//  cc = NC, Call if C flag is reset.
+//  cc = C, Call if C flag is set.
+// Use with:
+//  nn = two byte immediate value. (LS byte first.)
+func (cpu *CPU) callcc_nn(flag flags, isSet bool, operands []byte) {
+	if cpu.isSet(flag) == isSet {
+		cpu.push(byte(cpu.PC >> 8))
+		cpu.push(byte(cpu.PC & 0xFF))
+		cpu.PC = utils.Bytes2Word(operands[1], operands[0])
+	}
+}
+
+// PUSH nn
+// Description:
+//  Push register pair nn onto stack.
+//  Decrement Stack Pointer (SP) twice.
+// Use with:
+//  nn = AF,BC,DE,HL
+func (cpu *CPU) push_nn(h, l types.Register) {
+	cpu.push(h)
+	cpu.push(l)
+}
+
+// RST n
+// Description:
+//  Push present address onto stack.
+//  Jump to address $0000 + n.
+// Use with:
+//  n = $00,$08,$10,$18,$20,$28,$30,$38
+func (cpu *CPU) rst(n byte) {
+	cpu.push(byte(cpu.PC >> 8))
+	cpu.push(byte(cpu.PC & 0xFF))
+	cpu.PC = types.Word(n)
+}
+
+// RET
+// Description:
+//  Pop two bytes from stack & jump to that address.
+func (cpu *CPU) ret() {
+	l := cpu.pop()
+	h := cpu.pop()
+	cpu.PC = utils.Bytes2Word(h, l)
+}
+
+// CALL nn
+// Description:
+//  Push address of next instruction onto stack and then
+//  jump to address nn.
+// Use with:
+//  nn = two byte immediate value. (LS byte first.)
+func (cpu *CPU) call_nn(operands []byte) {
+	cpu.push(byte(cpu.PC >> 8))
+	cpu.push(byte(cpu.PC & 0xFF))
+	cpu.PC = utils.Bytes2Word(operands[1], operands[0])
+}
+
+// RETI
+// Description:
+//  Pop two bytes from stack & jump to that address then
+//  enable interrupts.
+func (cpu *CPU) ret_i() {
+	l := cpu.pop()
+	h := cpu.pop()
+	cpu.PC = utils.Bytes2Word(h, l)
+	cpu.irq.Enable()
+}
+
+// LDH (n),A
+// Description:
+//  Put A into memory address $FF00+n.
+// Use with:
+//  n = one byte immediate value.
+func (cpu *CPU) ldhn_a(operands []byte) {
+	cpu.bus.WriteByte(0xFF00+types.Word(operands[0]), cpu.Regs.A)
+}
+
+// LD (C),A
+// Description:
+//  Put A into address $FF00 + register C.
+func (cpu *CPU) ldc_a() {
+	addr := 0xFF00 + types.Word(cpu.Regs.C)
+	cpu.bus.WriteByte(addr, cpu.Regs.A)
+}
+
+// ADD SP,n
+// Description:
+//  Add n to Stack Pointer (SP).
+// Use with:
+//  n = one byte signed immediate value (#).
+// Flags affected:
+//  Z - Reset.
+//  N - Reset.
+//  H - Set or reset according to operation.
+//  C - Set or reset according to operation.
+func (cpu *CPU) addsp_n(operands []byte) {
+	n := operands[0]
+	var computed types.Word
+	if n > 127 {
+		computed = cpu.SP - types.Word(-n)
+	} else {
+		computed = cpu.SP + types.Word(n)
+	}
+	c := types.Word(cpu.SP ^ types.Word(n) ^ ((cpu.SP + types.Word(n)) & 0xffff))
+	cpu.SP = computed
+	if (c & 0x100) == 0x100 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
