@@ -1762,3 +1762,188 @@ func (cpu *CPU) sla_n(r *types.Register) {
 
 func (cpu *CPU) sla_hl() {
 	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.sla(v))
+}
+
+// SRA n
+// Description:
+//  Shift n right into Carry. MSB doesn't change.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 0 data.
+func (cpu *CPU) sra(v byte) byte {
+	shifted := (v >> 1) | (v & 0x80)
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.applyZeroBy(shifted)
+	if v&0x01 == 0x01 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	return shifted
+}
+
+func (cpu *CPU) sra_n(r *types.Register) {
+	*r = cpu.sra(*r)
+}
+
+func (cpu *CPU) sra_hl() {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.sra(v))
+}
+
+// SWAP n
+// Description:
+//  Swap upper & lower nibles of n.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Reset.
+func (cpu *CPU) swap(v byte) byte {
+	upper := (v & 0xF0) >> 4
+	lower := (v & 0x0F) << 4
+	computed := upper ^ lower
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.clearFlag(C)
+	cpu.applyZeroBy(computed)
+	return computed
+}
+
+func (cpu *CPU) swap_n(r *types.Register) {
+	*r = cpu.swap(*r)
+}
+
+func (cpu *CPU) swap_hl() {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.swap(v))
+}
+
+// SRL n
+// Description:
+//  Shift n right into Carry. MSB set to 0.
+// Use with:
+//  n = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if result is zero.
+//  N - Reset.
+//  H - Reset.
+//  C - Contains old bit 0 data.
+func (cpu *CPU) srl(v byte) byte {
+	shifted := v >> 1
+	cpu.clearFlag(N)
+	cpu.clearFlag(H)
+	cpu.applyZeroBy(shifted)
+	if v&0x01 == 0x01 {
+		cpu.setFlag(C)
+	} else {
+		cpu.clearFlag(C)
+	}
+	return shifted
+}
+
+func (cpu *CPU) srl_n(r *types.Register) {
+	*r = cpu.srl(*r)
+}
+
+func (cpu *CPU) srl_hl() {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.srl(v))
+}
+
+// BIT b,r
+// Description:
+//  Test bit b in register r.
+// Use with:
+//  b = 0 - 7, r = A,B,C,D,E,H,L,(HL)
+// Flags affected:
+//  Z - Set if bit b of register r is 0.
+//  N - Reset.
+//  H - Set.
+//  C - Not affected.
+func (cpu *CPU) testBit(bit types.Bit, a byte) {
+	cpu.applyZeroBy(a & byte(bit))
+	cpu.clearFlag(N)
+	cpu.setFlag(H)
+}
+
+func (cpu *CPU) bit_b_r(b types.Bit, r *byte) {
+	cpu.testBit(b, *r)
+}
+
+func (cpu *CPU) bit_b_hl(b types.Bit) {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.testBit(b, v)
+}
+
+// RES b,r
+// Description:
+// Reset bit b in register r.
+// Use with:
+// b = 0 - 7, r = A,B,C,D,E,H,L,(HL)
+// Flags affected: None.
+func (cpu *CPU) res_b(b types.Bit, a byte) byte {
+	return a & ^byte(b)
+}
+
+func (cpu *CPU) res_b_r(b types.Bit, r *types.Register) {
+	*r = cpu.res_b(b, *r)
+}
+
+func (cpu *CPU) res_b_hl(b types.Bit) {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.res_b(b, v))
+}
+
+// SET b,r
+// Description:
+// Set bit b in register r.
+// Use with:
+// b = 0 - 7, r = A,B,C,D,E,H,L,(HL)
+// Flags affected: None.
+func (cpu *CPU) set_b(b types.Bit, a byte) byte {
+	return a | byte(b)
+}
+
+func (cpu *CPU) set_b_r(b types.Bit, r *types.Register) {
+	*r = cpu.set_b(b, *r)
+}
+
+func (cpu *CPU) set_b_hl(b types.Bit) {
+	addr := cpu.getHL()
+	v := cpu.bus.ReadByte(addr)
+	cpu.bus.WriteByte(addr, cpu.set_b(b, v))
+}
+
+func (cpu *CPU) resolveIRQ() bool {
+	if !cpu.irq.Enabled() || !cpu.irq.HasIRQ() {
+		return false
+	}
+	cpu.pushPC()
+	addr := cpu.irq.ResolveISRAddr()
+	if addr == nil {
+		return false
+	}
+	cpu.PC = *addr
+	cpu.irq.Disable()
+	return true
+}
+
+// For Debugging
+func (cpu *CPU) GetRegisters() Registers {
+	return cpu.Regs
+}
