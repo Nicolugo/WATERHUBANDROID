@@ -29,4 +29,25 @@ func NewGB(cpu *cpu.CPU, gpu *gpu.GPU, timer *timer.Timer, irq *interrupt.Interr
 		currentCycle: 0,
 		cpu:          cpu,
 		gpu:          gpu,
-		timer:        tim
+		timer:        timer,
+		irq:          irq,
+		win:          win,
+	}
+}
+
+// Start is
+func (g *GB) Start() {
+	t := time.NewTicker(16 * time.Millisecond)
+	for {
+		select {
+		case <-t.C:
+			buf := g.Next()
+			g.win.Render(buf)
+		}
+	}
+	t.Stop()
+}
+func (g *GB) Next() []byte {
+	for {
+		var cycles uint
+		if 
