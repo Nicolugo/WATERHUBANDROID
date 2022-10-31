@@ -26,3 +26,15 @@ type GPU struct {
 	mode            GPUMode
 	clock           uint
 	lcdc            byte
+	stat            byte
+	ly              uint
+	lyc             byte
+	scrollX         byte
+	scrollY         byte
+	windowX         byte
+	windowY         byte
+	bgPalette       byte
+	objPalette0     byte
+	objPalette1     byte
+	disableDisplay  bool
+	oamDMAStarted
