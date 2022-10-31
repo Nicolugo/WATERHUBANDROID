@@ -58,4 +58,14 @@ func (g *GB) Next() []byte {
 			cycles = g.cpu.Step()
 		}
 		g.gpu.Step(cycles * 4)
-		if overflowed := g.timer.Update(cycles)
+		if overflowed := g.timer.Update(cycles); overflowed {
+			g.irq.SetIRQ(interrupt.TimerOverflowFlag)
+		}
+		g.currentCycle += cycles * 4
+		if g.currentCycle >= CyclesPerFrame {
+			g.win.PollKey()
+			g.currentCycle -= CyclesPerFrame
+			return g.gpu.GetImageData()
+		}
+	}
+}
