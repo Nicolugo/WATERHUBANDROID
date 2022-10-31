@@ -50,4 +50,12 @@ func (g *GB) Start() {
 func (g *GB) Next() []byte {
 	for {
 		var cycles uint
-		if 
+		if g.gpu.DMAStarted() {
+			g.gpu.Transfer()
+			// https://github.com/Gekkio/mooneye-gb/blob/master/docs/accuracy.markdown#how-many-cycles-does-oam-dma-take
+			cycles = 162
+		} else {
+			cycles = g.cpu.Step()
+		}
+		g.gpu.Step(cycles * 4)
+		if overflowed := g.timer.Update(cycles)
