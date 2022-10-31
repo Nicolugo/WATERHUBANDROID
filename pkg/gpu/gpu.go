@@ -37,4 +37,20 @@ type GPU struct {
 	objPalette0     byte
 	objPalette1     byte
 	disableDisplay  bool
-	oamDMAStarted
+	oamDMAStarted   bool
+	oamDMAStartAddr types.Word
+}
+
+// GPUMode
+type GPUMode = byte
+
+const (
+	// HBlankMode is period CPU can access the display RAM ($8000-$9FFF).
+	HBlankMode GPUMode = iota
+	// period and the CPU can access the display RAM ($8000-$9FFF).
+	VBlankMode
+	SearchingOAMMode
+	TransferingData
+)
+
+// G
