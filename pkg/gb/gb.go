@@ -20,4 +20,13 @@ type GB struct {
 	gpu          *gpu.GPU
 	timer        *timer.Timer
 	irq          *interrupt.Interrupt
-	
+	win          window.Window
+}
+
+// NewGB is gb initializer
+func NewGB(cpu *cpu.CPU, gpu *gpu.GPU, timer *timer.Timer, irq *interrupt.Interrupt, win window.Window) *GB {
+	return &GB{
+		currentCycle: 0,
+		cpu:          cpu,
+		gpu:          gpu,
+		timer:        tim
