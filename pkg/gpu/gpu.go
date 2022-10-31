@@ -13,4 +13,16 @@ import (
 // CyclePerLine is gpu clock count per line
 const CyclePerLine uint = 456
 
-// LCDVBla
+// LCDVBlankHeight means vblank height
+const LCDVBlankHeight uint = 10
+
+const spriteNum = 40
+
+// GPU is
+type GPU struct {
+	bus             bus.Accessor
+	irq             interrupt.Interrupt
+	imageData       []byte
+	mode            GPUMode
+	clock           uint
+	lcdc            byte
