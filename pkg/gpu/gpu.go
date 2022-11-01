@@ -65,4 +65,10 @@ const (
 	// 8 Bit value $00-$FF to scroll BG X screen
 	// position.
 	SCROLLX = 0x03
-	/
+	// LY Y-Coordinate (R)
+	// The LY indicates the vertical line to which
+	// the present data is transferred to the LCD
+	// Driver. The LY can take on any value
+	// between 0 through 153. The values between
+	// 144 and 153 indicate the V-Blank period.
+	// Writing will reset the counter.
