@@ -53,4 +53,16 @@ const (
 	TransferingData
 )
 
-// G
+// GPU register addresses
+const (
+	LCDC types.Word = 0x00
+	STAT            = 0x01
+	// Scroll Y (R/W)
+	// 8 Bit value $00-$FF to scroll BG Y screen
+	// position.
+	SCROLLY = 0x02
+	// Scroll X (R/W)
+	// 8 Bit value $00-$FF to scroll BG X screen
+	// position.
+	SCROLLX = 0x03
+	/
