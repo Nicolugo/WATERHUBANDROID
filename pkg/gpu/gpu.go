@@ -95,4 +95,13 @@ const (
 
 const (
 	TILEMAP0  types.Word = 0x9800
-	TI
+	TILEMAP1             = 0x9C00
+	TILEDATA0            = 0x8800
+	TILEDATA1            = 0x8000
+	OAMSTART             = 0xFE00
+)
+
+// NewGPU is GPU constructor
+func NewGPU() *GPU {
+	return &GPU{
+		imageData:       make([]byte, constants.ScreenWidth*constants.S
