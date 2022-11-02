@@ -81,4 +81,18 @@ const (
 	// Bit 3-2 - Data for Dot Data 01
 	// Bit 1-0 - Data for Dot Data 00
 	// (Normally lightest color)
-	// This selects the s
+	// This selects the shade of grays to use
+	// for the background (BG) & window pixels.
+	// Since each pixel uses 2 bits, the
+	// corresponding shade will be selected from here.
+	DMA  = 0x06
+	BGP  = 0x07
+	OBP0 = 0x08
+	OBP1 = 0x09
+	WX   = 0x0B
+	WY   = 0x0A
+)
+
+const (
+	TILEMAP0  types.Word = 0x9800
+	TI
