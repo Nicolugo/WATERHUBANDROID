@@ -72,3 +72,13 @@ const (
 	// between 0 through 153. The values between
 	// 144 and 153 indicate the V-Blank period.
 	// Writing will reset the counter.
+	LY  = 0x04
+	LYC = 0x05
+	// BGP - BG & Window Palette Data (R/W)
+	// Bit 7-6 - Data for Dot Data 11
+	// (Normally darkest color)
+	// Bit 5-4 - Data for Dot Data 10
+	// Bit 3-2 - Data for Dot Data 01
+	// Bit 1-0 - Data for Dot Data 00
+	// (Normally lightest color)
+	// This selects the s
