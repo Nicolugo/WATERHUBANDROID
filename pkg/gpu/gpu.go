@@ -104,4 +104,17 @@ const (
 // NewGPU is GPU constructor
 func NewGPU() *GPU {
 	return &GPU{
-		imageData:       make([]byte, constants.ScreenWidth*constants.S
+		imageData:       make([]byte, constants.ScreenWidth*constants.ScreenHeight*4),
+		mode:            HBlankMode,
+		clock:           0,
+		lcdc:            0x91,
+		ly:              0,
+		scrollX:         0,
+		scrollY:         0,
+		oamDMAStarted:   false,
+		oamDMAStartAddr: 0,
+	}
+}
+
+// Init initialize GPU
+func (g *GPU
