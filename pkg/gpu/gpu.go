@@ -141,4 +141,16 @@ func (g *GPU) Step(cycles uint) {
 			if g.vBlankInterruptEnabled() {
 				g.irq.SetIRQ(irq.LCDSFlag)
 			}
-		} else if g.ly >= constants.ScreenHeig
+		} else if g.ly >= constants.ScreenHeight+LCDVBlankHeight {
+			g.ly = 0
+			g.buildBGTile()
+		} else if g.ly < constants.ScreenHeight {
+			g.buildBGTile()
+			if g.windowEnabled() {
+				g.buildWindowTile()
+			}
+		}
+
+		if g.ly == uint(g.lyc) {
+			g.stat |= 0x04
+			if g.coincidenceIn
