@@ -131,4 +131,14 @@ func (g *GPU) Step(cycles uint) {
 
 	g.clock += cycles
 
-	if !g.
+	if !g.lcdEnabled() {
+		return
+	}
+	if g.clock >= CyclePerLine {
+		if g.ly == constants.ScreenHeight {
+			g.buildSprites()
+			g.irq.SetIRQ(irq.VerticalBlankFlag)
+			if g.vBlankInterruptEnabled() {
+				g.irq.SetIRQ(irq.LCDSFlag)
+			}
+		} else if g.ly >= constants.ScreenHeig
