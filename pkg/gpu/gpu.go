@@ -172,4 +172,16 @@ func (g *GPU) longSprite() bool {
 	return (g.lcdc & 0x04) == 0x04
 }
 
-func (g *G
+func (g *GPU) coincidenceInterruptEnabled() bool {
+	return (g.stat & 0x40) == 0x40
+}
+
+func (g *GPU) vBlankInterruptEnabled() bool {
+	return (g.stat & 0x10) == 0x10
+}
+
+func (g *GPU) hblankInterruptEnabled() bool {
+	return (g.stat & 0x08) == 0x08
+}
+
+func (g *GPU) Read(addr typ
