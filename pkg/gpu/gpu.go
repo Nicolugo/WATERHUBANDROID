@@ -153,4 +153,23 @@ func (g *GPU) Step(cycles uint) {
 
 		if g.ly == uint(g.lyc) {
 			g.stat |= 0x04
-			if g.coincidenceIn
+			if g.coincidenceInterruptEnabled() {
+				g.irq.SetIRQ(irq.LCDSFlag)
+			}
+		} else {
+			g.stat &= 0xFB
+		}
+		g.ly++
+		g.clock -= CyclePerLine
+	}
+}
+
+func (g *GPU) lcdEnabled() bool {
+	return (g.lcdc & 0x80) == 0x80
+}
+
+func (g *GPU) longSprite() bool {
+	return (g.lcdc & 0x04) == 0x04
+}
+
+func (g *G
