@@ -117,4 +117,18 @@ func NewGPU() *GPU {
 }
 
 // Init initialize GPU
-func (g *GPU
+func (g *GPU) Init(bus bus.Accessor, irq interrupt.Interrupt) {
+	g.bus = bus
+	g.irq = irq
+}
+
+// Step is run GPU
+func (g *GPU) Step(cycles uint) {
+	if g.bus == nil {
+		panic("Please initialize gpu with Init, before running.")
+	}
+	g.updateMode()
+
+	g.clock += cycles
+
+	if !g.
