@@ -216,4 +216,19 @@ func (g *GPU) updateMode() {
 		g.mode = VBlankMode
 	case g.clock <= 80:
 		g.mode = SearchingOAMMode
-	c
+	case g.clock >= 167 && g.clock <= 291:
+		g.mode = TransferingData
+	default:
+		g.mode = HBlankMode
+		if g.hblankInterruptEnabled() {
+			g.irq.SetIRQ(irq.LCDSFlag)
+		}
+	}
+
+}
+
+func (g *GPU) windowEnabled() bool {
+	return g.lcdc&0x20 == 0x20
+}
+
+func (g *GPU) getWindowTilemapAddr()
