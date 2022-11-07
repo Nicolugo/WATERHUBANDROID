@@ -231,4 +231,20 @@ func (g *GPU) windowEnabled() bool {
 	return g.lcdc&0x20 == 0x20
 }
 
-func (g *GPU) getWindowTilemapAddr()
+func (g *GPU) getWindowTilemapAddr() types.Word {
+	if g.lcdc&0x40 == 0x40 {
+		return TILEMAP1
+	}
+	return TILEMAP0
+}
+
+func (g *GPU) getBGTilemapAddr() types.Word {
+	if g.lcdc&0x08 == 0x08 {
+		return TILEMAP1
+	}
+	return TILEMAP0
+}
+
+func (g *GPU) getTileDataAddr() types.Word {
+	if !g.tileData0Selected() {
+		return 
