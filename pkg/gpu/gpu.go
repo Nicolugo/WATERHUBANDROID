@@ -199,4 +199,21 @@ func (g *GPU) Read(addr types.Word) byte {
 	case BGP:
 		return g.bgPalette
 	case OBP0:
-		return g.o
+		return g.objPalette0
+	case OBP1:
+		return g.objPalette1
+	case WX:
+		return g.windowX
+	case WY:
+		return g.windowY
+	}
+	return 0x00
+}
+
+func (g *GPU) updateMode() {
+	switch {
+	case g.ly > constants.ScreenHeight:
+		g.mode = VBlankMode
+	case g.clock <= 80:
+		g.mode = SearchingOAMMode
+	c
