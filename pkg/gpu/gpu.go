@@ -184,4 +184,19 @@ func (g *GPU) hblankInterruptEnabled() bool {
 	return (g.stat & 0x08) == 0x08
 }
 
-func (g *GPU) Read(addr typ
+func (g *GPU) Read(addr types.Word) byte {
+	switch addr {
+	case LCDC:
+		return g.lcdc
+	case STAT:
+		return g.stat&0xF8 | (byte(g.mode)) | 0x80
+	case SCROLLX:
+		return g.scrollX
+	case SCROLLY:
+		return g.scrollY
+	case LY:
+		return byte(g.ly)
+	case BGP:
+		return g.bgPalette
+	case OBP0:
+		return g.o
