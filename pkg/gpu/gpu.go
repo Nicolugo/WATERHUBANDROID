@@ -295,4 +295,12 @@ func (g *GPU) DMAStarted() bool {
 func (g *GPU) Transfer() {
 	for i := 0; i < 0xA0; i++ {
 		data := g.bus.ReadByte(g.oamDMAStartAddr + types.Word(i))
-		g.b
+		g.bus.WriteByte(OAMSTART+types.Word(i), data)
+	}
+	g.oamDMAStarted = false
+}
+
+func (g *GPU) buildSprites() {
+	for i := 0; i < spriteNum; i++ {
+		offsetY := int(g.bus.ReadByte(types.Word(OAMSTART+i*4))) - 16
+		offsetX := int(g.bus.ReadByte(types.Word(OAMSTART+i*4+1))) -
