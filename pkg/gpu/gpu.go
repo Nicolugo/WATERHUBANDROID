@@ -264,4 +264,23 @@ func (g *GPU) Write(addr types.Word, data byte) {
 	case SCROLLY:
 		g.scrollY = data
 	case LY:
-		g.ly = 
+		g.ly = 0
+	case LYC:
+		g.lyc = data
+	case BGP:
+		g.bgPalette = data
+	case OBP0:
+		g.objPalette0 = data
+	case OBP1:
+		g.objPalette1 = data
+	case DMA:
+		g.oamDMAStarted = true
+		g.oamDMAStartAddr = types.Word(data) * 0x100
+	case WX:
+		g.windowX = data
+	case WY:
+		g.windowY = data
+	}
+}
+
+// GetImageData is i
