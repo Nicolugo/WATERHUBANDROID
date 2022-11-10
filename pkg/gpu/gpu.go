@@ -283,4 +283,16 @@ func (g *GPU) Write(addr types.Word, data byte) {
 	}
 }
 
-// GetImageData is i
+// GetImageData is image data getter
+func (g *GPU) GetImageData() []byte {
+	return g.imageData
+}
+
+func (g *GPU) DMAStarted() bool {
+	return g.oamDMAStarted
+}
+
+func (g *GPU) Transfer() {
+	for i := 0; i < 0xA0; i++ {
+		data := g.bus.ReadByte(g.oamDMAStartAddr + types.Word(i))
+		g.b
