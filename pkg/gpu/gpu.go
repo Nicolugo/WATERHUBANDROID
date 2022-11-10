@@ -247,4 +247,21 @@ func (g *GPU) getBGTilemapAddr() types.Word {
 
 func (g *GPU) getTileDataAddr() types.Word {
 	if !g.tileData0Selected() {
-		return 
+		return TILEDATA1
+	}
+	return TILEDATA0
+}
+
+func (g *GPU) Write(addr types.Word, data byte) {
+	switch addr {
+	case LCDC:
+		g.lcdc = data
+	case STAT:
+		// bit2-0 are flags
+		g.stat = (g.stat & 0x07) | data
+	case SCROLLX:
+		g.scrollX = data
+	case SCROLLY:
+		g.scrollY = data
+	case LY:
+		g.ly = 
