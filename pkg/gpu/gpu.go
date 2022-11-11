@@ -303,4 +303,11 @@ func (g *GPU) Transfer() {
 func (g *GPU) buildSprites() {
 	for i := 0; i < spriteNum; i++ {
 		offsetY := int(g.bus.ReadByte(types.Word(OAMSTART+i*4))) - 16
-		offsetX := int(g.bus.ReadByte(types.Word(OAMSTART+i*4+1))) -
+		offsetX := int(g.bus.ReadByte(types.Word(OAMSTART+i*4+1))) - 8
+		tileID := g.bus.ReadByte(types.Word(OAMSTART + i*4 + 2))
+		config := types.Word(g.bus.ReadByte(types.Word(OAMSTART + i*4 + 3)))
+		// aboveBG := config&0x80 == 0
+		yFlip := config&0x40 != 0
+		xFlip := config&0x20 != 0
+		isPallette1 := config&0x10 != 0
+		height :=
