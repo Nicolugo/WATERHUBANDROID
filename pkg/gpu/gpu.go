@@ -343,4 +343,17 @@ func (g *GPU) buildSprites() {
 				if paletteID != 0 {
 					rgba := g.getPalette(c)
 					base := (uint(offsetY+adjustedY)*constants.ScreenWidth + uint(adjustedX+offsetX)) * 4
-					g.imageDat
+					g.imageData[base] = rgba.R
+					g.imageData[base+1] = rgba.G
+					g.imageData[base+2] = rgba.B
+					g.imageData[base+3] = rgba.A
+				}
+			}
+		}
+	}
+}
+
+func (g *GPU) buildBGTile() {
+	var tileID int
+	for x := 0; x < constants.ScreenWidth; x++ {
+		tileY := ((g.ly + uin
