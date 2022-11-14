@@ -336,4 +336,11 @@ func (g *GPU) buildSprites() {
 				}
 				var c byte
 				if isPallette1 {
-					c = (g.
+					c = (g.objPalette1 >> (paletteID * 2)) & 0x03
+				} else {
+					c = (g.objPalette0 >> (paletteID * 2)) & 0x03
+				}
+				if paletteID != 0 {
+					rgba := g.getPalette(c)
+					base := (uint(offsetY+adjustedY)*constants.ScreenWidth + uint(adjustedX+offsetX)) * 4
+					g.imageDat
