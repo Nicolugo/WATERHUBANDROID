@@ -321,4 +321,19 @@ func (g *GPU) buildSprites() {
 				if offsetX+x < 0 || offsetX+x >= constants.ScreenWidth {
 					continue
 				}
-				if offsetY+y < 0 || offse
+				if offsetY+y < 0 || offsetY+y >= constants.ScreenHeight {
+					continue
+				}
+
+				paletteID := g.getSpritePaletteID(int(tileID), x, uint(y))
+				adjustedX := x
+				if xFlip {
+					adjustedX = 7 - x
+				}
+				adjustedY := y
+				if yFlip {
+					adjustedY = 7 - y
+				}
+				var c byte
+				if isPallette1 {
+					c = (g.
