@@ -310,4 +310,15 @@ func (g *GPU) buildSprites() {
 		yFlip := config&0x40 != 0
 		xFlip := config&0x20 != 0
 		isPallette1 := config&0x10 != 0
-		height :=
+		height := 8
+		if g.longSprite() {
+			height = 16
+			// LSB is ignored (treated as 0) in 8x16 mode.)
+			tileID = tileID & 0xFE
+		}
+		for x := 0; x < 8; x++ {
+			for y := 0; y < height; y++ {
+				if offsetX+x < 0 || offsetX+x >= constants.ScreenWidth {
+					continue
+				}
+				if offsetY+y < 0 || offse
