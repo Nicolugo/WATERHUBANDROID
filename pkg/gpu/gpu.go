@@ -370,4 +370,16 @@ func (g *GPU) buildBGTile() {
 
 func (g *GPU) buildWindowTile() {
 	var tileID int
-	if (g.windowX < 0 && g.windowX >= 167
+	if (g.windowX < 0 && g.windowX >= 167) && (g.windowY < 0 && g.windowY >= 144) {
+		return
+	}
+	if g.ly < uint(g.windowY) {
+		return
+	}
+	for x := 0; x < constants.ScreenWidth; x++ {
+		offsetX := uint(g.windowX - 7)
+		if x < int(offsetX) {
+			continue
+		}
+		tileY := (g.ly - uint(g.windowY)) / 8 * 32
+		tileID = g.getTileID
