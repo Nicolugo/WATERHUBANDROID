@@ -356,4 +356,8 @@ func (g *GPU) buildSprites() {
 func (g *GPU) buildBGTile() {
 	var tileID int
 	for x := 0; x < constants.ScreenWidth; x++ {
-		tileY := ((g.ly + uin
+		tileY := ((g.ly + uint(g.scrollY)) % 0x100) / 8 * 32
+		tileID = g.getTileID(tileY, uint(x+int(g.scrollX))/8%32, g.getBGTilemapAddr())
+		paletteID := g.getBGPaletteID(tileID, int(g.scrollX%8)+x, (g.ly+uint(g.scrollY))%8)
+		rgba := g.getBGPalette(uint(paletteID))
+		base := ((g.ly)*constants
