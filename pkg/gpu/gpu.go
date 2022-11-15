@@ -360,4 +360,14 @@ func (g *GPU) buildBGTile() {
 		tileID = g.getTileID(tileY, uint(x+int(g.scrollX))/8%32, g.getBGTilemapAddr())
 		paletteID := g.getBGPaletteID(tileID, int(g.scrollX%8)+x, (g.ly+uint(g.scrollY))%8)
 		rgba := g.getBGPalette(uint(paletteID))
-		base := ((g.ly)*constants
+		base := ((g.ly)*constants.ScreenWidth + uint(x)) * 4
+		g.imageData[base] = rgba.R
+		g.imageData[base+1] = rgba.G
+		g.imageData[base+2] = rgba.B
+		g.imageData[base+3] = rgba.A
+	}
+}
+
+func (g *GPU) buildWindowTile() {
+	var tileID int
+	if (g.windowX < 0 && g.windowX >= 167
