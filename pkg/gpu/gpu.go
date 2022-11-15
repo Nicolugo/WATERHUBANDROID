@@ -382,4 +382,10 @@ func (g *GPU) buildWindowTile() {
 			continue
 		}
 		tileY := (g.ly - uint(g.windowY)) / 8 * 32
-		tileID = g.getTileID
+		tileID = g.getTileID(tileY, uint(x-int(offsetX))/8, g.getWindowTilemapAddr())
+		paletteID := g.getBGPaletteID(tileID, int(x-int(offsetX)), (g.ly-uint(g.windowY))%8)
+
+		rgba := g.getBGPalette(uint(paletteID))
+		base := ((g.ly)*constants.ScreenWidth + uint(x)) * 4
+		g.imageData[base] = rgba.R
+		g.imageData[base+1
