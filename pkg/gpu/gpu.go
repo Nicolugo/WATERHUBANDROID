@@ -427,4 +427,16 @@ func (g *GPU) getBGPaletteID(tileID int, x int, y uint) byte {
 	} else {
 		addr = types.Word(tileID * 0x10)
 	}
-	base := types.Wo
+	base := types.Word(g.getTileDataAddr() + addr + types.Word(y*2))
+	l1 := g.bus.ReadByte(base)
+	l2 := g.bus.ReadByte(base + 1)
+	paletteID := byte(0)
+	if l1&(0x01<<(7-uint(x))) != 0 {
+		paletteID = 1
+	}
+	if l2&(0x01<<(7-uint(x))) != 0 {
+		paletteID += 2
+	}
+	return paletteID
+}
+
