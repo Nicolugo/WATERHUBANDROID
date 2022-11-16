@@ -401,4 +401,17 @@ func (g *GPU) tileData0Selected() bool {
 func (g *GPU) getSpritePaletteID(tileID int, x int, y uint) byte {
 	x = x % 8
 	addr := types.Word(tileID * 0x10)
-	base := types.Word(TIL
+	base := types.Word(TILEDATA1 + addr + types.Word(y*2))
+	l1 := g.bus.ReadByte(base)
+	l2 := g.bus.ReadByte(base + 1)
+	paletteID := byte(0)
+	if l1&(0x01<<(7-uint(x))) != 0 {
+		paletteID = 1
+	}
+	if l2&(0x01<<(7-uint(x))) != 0 {
+		paletteID += 2
+	}
+	return paletteID
+}
+
+func (g *GPU) getBGPaletteID(tileID int, x int, y uint) by
