@@ -420,4 +420,11 @@ func (g *GPU) getBGPaletteID(tileID int, x int, y uint) byte {
 	// In the first case, patterns are numbered with unsigned numbers from 0 to 255 (i.e.
 	// 	pattern #0 lies at address $8000). In the second case,
 	// 	patterns have signed numbers from -128 to 127 (i.e.
-	// 	pattern #0 lies at ad
+	// 	pattern #0 lies at address $9000). The Tile Data Table
+	// 	address for the background can be selected via LCDC	register.
+	if g.tileData0Selected() {
+		addr = types.Word((int(int8(tileID)) + 128) * 0x10)
+	} else {
+		addr = types.Word(tileID * 0x10)
+	}
+	base := types.Wo
