@@ -414,4 +414,10 @@ func (g *GPU) getSpritePaletteID(tileID int, x int, y uint) byte {
 	return paletteID
 }
 
-func (g *GPU) getBGPaletteID(tileID int, x int, y uint) by
+func (g *GPU) getBGPaletteID(tileID int, x int, y uint) byte {
+	x = x % 8
+	var addr types.Word
+	// In the first case, patterns are numbered with unsigned numbers from 0 to 255 (i.e.
+	// 	pattern #0 lies at address $8000). In the second case,
+	// 	patterns have signed numbers from -128 to 127 (i.e.
+	// 	pattern #0 lies at ad
