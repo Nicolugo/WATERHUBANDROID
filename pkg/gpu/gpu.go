@@ -388,4 +388,17 @@ func (g *GPU) buildWindowTile() {
 		rgba := g.getBGPalette(uint(paletteID))
 		base := ((g.ly)*constants.ScreenWidth + uint(x)) * 4
 		g.imageData[base] = rgba.R
-		g.imageData[base+1
+		g.imageData[base+1] = rgba.G
+		g.imageData[base+2] = rgba.B
+		g.imageData[base+3] = rgba.A
+	}
+}
+
+func (g *GPU) tileData0Selected() bool {
+	return g.lcdc&0x10 != 0x10
+}
+
+func (g *GPU) getSpritePaletteID(tileID int, x int, y uint) byte {
+	x = x % 8
+	addr := types.Word(tileID * 0x10)
+	base := types.Word(TIL
