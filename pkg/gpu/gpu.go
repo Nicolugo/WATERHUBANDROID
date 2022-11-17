@@ -449,4 +449,16 @@ func (g *GPU) getTileID(tileY, lineOffset uint, offsetAddr types.Word) int {
 
 func (g *GPU) getBGPalette(n uint) color.RGBA {
 	c := (g.bgPalette >> (n * 2)) & 0x03
-	
+	return g.getPalette(c)
+}
+
+func (g *GPU) getPalette(c byte) color.RGBA {
+	switch c {
+	case 0:
+		return color.RGBA{175, 197, 160, 255}
+	case 1:
+		return color.RGBA{93, 147, 66, 255}
+	case 2:
+		return color.RGBA{22, 63, 48, 255}
+	case 3:
+		return color.RGBA{0, 4
