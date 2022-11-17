@@ -440,3 +440,13 @@ func (g *GPU) getBGPaletteID(tileID int, x int, y uint) byte {
 	return paletteID
 }
 
+func (g *GPU) getTileID(tileY, lineOffset uint, offsetAddr types.Word) int {
+	addr := types.Word(tileY) + types.Word(lineOffset) + offsetAddr
+	id := byte(g.bus.ReadByte(addr))
+	return int(id)
+
+}
+
+func (g *GPU) getBGPalette(n uint) color.RGBA {
+	c := (g.bgPalette >> (n * 2)) & 0x03
+	
