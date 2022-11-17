@@ -461,4 +461,7 @@ func (g *GPU) getPalette(c byte) color.RGBA {
 	case 2:
 		return color.RGBA{22, 63, 48, 255}
 	case 3:
-		return color.RGBA{0, 4
+		return color.RGBA{0, 40, 0, 255}
+	}
+	panic("unhandled color number detected.")
+}
