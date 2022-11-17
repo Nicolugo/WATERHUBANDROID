@@ -29,4 +29,21 @@ func NewLogger(level LogLevel) *Log {
 	// if err != nil {
 	// 	panic("cannnot open test.log:" + err.Error())
 	// }
-	// log.S
+	// log.SetOutput(io.MultiWriter(logfile))
+	// log.SetFlags(log.Ldate | log.Ltime)
+
+	return &Log{
+		Level: level,
+	}
+}
+
+// Debug is
+func (l *Log) Debug(args ...interface{}) {
+	if l.Level != "Debug" {
+		return
+	}
+	log.Println("[DEBUG] ", args)
+}
+
+// Info is
+func (l *Log) Info
