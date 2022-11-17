@@ -22,4 +22,11 @@ type Log struct {
 }
 
 // NewLogger is logger constructor
-func NewLog
+func NewLogger(level LogLevel) *Log {
+	// now := time.Now().Unix()
+	// n := strconv.FormatInt(now, 10)
+	// logfile, err := os.OpenFile("./logs/test-"+n+".log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// if err != nil {
+	// 	panic("cannnot open test.log:" + err.Error())
+	// }
+	// log.S
