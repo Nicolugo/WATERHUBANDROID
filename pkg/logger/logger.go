@@ -46,4 +46,16 @@ func (l *Log) Debug(args ...interface{}) {
 }
 
 // Info is
-func (l *Log) Info
+func (l *Log) Info(args ...interface{}) {
+	log.Println("[Info] ", args)
+}
+
+// Error is
+func (l *Log) Error(args ...interface{}) {
+	log.Println("[ERROR] ", args)
+}
+
+// Warn is
+func (l *Log) Warn(args ...interface{}) {
+	log.Println("[WARNING] ", args)
+}
