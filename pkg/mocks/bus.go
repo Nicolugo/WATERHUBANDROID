@@ -23,4 +23,11 @@ func (b *MockBus) ReadByte(addr types.Word) byte {
 
 func (b *MockBus) ReadWord(addr types.Word) types.Word {
 	upper := types.Word(b.MockMemory[addr]) << 8
-	return upper + types.Word(b
+	return upper + types.Word(b.MockMemory[addr+1])
+}
+
+func (b *MockBus) SetMemory(offset types.Word, data []byte) {
+	for i, d := range data {
+		b.MockMemory[offset+types.Word(i)] = d
+	}
+}
