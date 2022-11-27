@@ -63,4 +63,22 @@ func (pad *Pad) Read() byte {
 	return pad.reg | 0x0f
 }
 
-func (pad *Pad) Write(data byte) 
+func (pad *Pad) Write(data byte) {
+	pad.reg = (pad.reg & 0xCF) | (data & 0x30)
+}
+
+func (pad *Pad) isP14On() bool {
+	return pad.reg&0x10 == 0
+}
+
+func (pad *Pad) isP15On() bool {
+	return pad.reg&0x20 == 0
+}
+
+func (pad *Pad) Press(button Button) {
+	pad.state |= button
+}
+
+func (pad *Pad) Release(button Button) {
+	pad.state &= ^button
+}
