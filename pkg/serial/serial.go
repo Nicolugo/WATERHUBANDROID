@@ -2,4 +2,6 @@ package serial
 
 import "fmt"
 
-func 
+func Send(b byte) {
+	fmt.Printf("%v", string(b))
+}
