@@ -36,4 +36,14 @@ const (
 	Select Button = 0x04
 	// Start is the start button on the GameBoy.
 	Start Button = 0x08
-	// Right is the right pad direction on the Ga
+	// Right is the right pad direction on the GameBoy.
+	Right Button = 0x10
+	// Left is the left pad direction on the GameBoy.
+	Left Button = 0x20
+	// Up is the up pad direction on the GameBoy.
+	Up Button = 0x40
+	// Down is the down pad direction on the GameBoy.
+	Down Button = 0x80
+)
+
+// NewPad constructs pad
