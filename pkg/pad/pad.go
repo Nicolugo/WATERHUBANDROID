@@ -29,4 +29,11 @@ type Button byte
 
 const (
 	// A is the A button on the GameBoy.
-	A Button = 
+	A Button = 0x01
+	// B is the B button on the GameBoy.
+	B Button = 0x02
+	// Select is the select button on the GameBoy.
+	Select Button = 0x04
+	// Start is the start button on the GameBoy.
+	Start Button = 0x08
+	// Right is the right pad direction on the Ga
