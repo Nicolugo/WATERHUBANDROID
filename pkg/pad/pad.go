@@ -46,4 +46,21 @@ const (
 	Down Button = 0x80
 )
 
-// NewPad constructs pad
+// NewPad constructs pad peripheral.
+func NewPad() *Pad {
+	return &Pad{
+		reg: 0x3F,
+	}
+}
+
+func (pad *Pad) Read() byte {
+	if pad.isP14On() {
+		return pad.reg & ^byte(pad.state>>4)
+	}
+	if pad.isP15On() {
+		return pad.reg & ^byte(pad.state&0x0F)
+	}
+	return pad.reg | 0x0f
+}
+
+func (pad *Pad) Write(data byte) 
