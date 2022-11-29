@@ -45,4 +45,17 @@ func NewTimer() *Timer {
 		internalCounter: 0,
 		TIMA:            0x00,
 		TAC:             0x00,
-		TMA:        
+		TMA:             0x00,
+	}
+}
+
+// Update timer counter registers
+// If timer is overflowed return true
+func (timer *Timer) Update(cycles uint) bool {
+	r := false
+	for cycles > 0 {
+		cycles--
+		old := timer.internalCounter
+		timer.internalCounter += 4
+
+		if !timer.isStarted()
