@@ -23,4 +23,14 @@ const (
 	//         0: Stop Timer
 	//         1: Start Timer
 	// Bits 1+0 - Input Clock Select
-	//         00: 4
+	//         00: 4.096 KHz (~4.194 KHz SGB)
+	//         01: 262.144 Khz (~268.4 KHz SGB)
+	//         10: 65.536 KHz (~67.11 KHz SGB)
+	//         11: 16.384 KHz (~16.78 KHz SGB)
+	TAC = 0x07
+)
+
+// Timer has 4 registers.
+type Timer struct {
+	internalCounter uint16
+	TI
