@@ -33,4 +33,16 @@ const (
 // Timer has 4 registers.
 type Timer struct {
 	internalCounter uint16
-	TI
+	TIMA            byte
+	TAC             byte
+	TMA             byte
+}
+
+// NewTimer constructs timer peripheral.
+func NewTimer() *Timer {
+	return &Timer{
+		// 4.194304MHz / 256 = 16.384KHz
+		internalCounter: 0,
+		TIMA:            0x00,
+		TAC:             0x00,
+		TMA:        
