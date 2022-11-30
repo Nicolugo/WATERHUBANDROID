@@ -58,4 +58,21 @@ func (timer *Timer) Update(cycles uint) bool {
 		old := timer.internalCounter
 		timer.internalCounter += 4
 
-		if !timer.isStarted()
+		if !timer.isStarted() {
+			continue
+		}
+		if !timer.hasFallingEdgeDetected(old, timer.internalCounter) {
+			continue
+		}
+		timer.TIMA++
+		if timer.TIMA == 0 {
+			timer.TIMA = timer.TMA
+			r = true
+		}
+	}
+	return r
+}
+
+func (timer *Timer) Read(addr types.Word) byte {
+	switch addr {
+	case 
