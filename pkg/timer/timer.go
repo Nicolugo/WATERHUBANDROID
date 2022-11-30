@@ -75,4 +75,19 @@ func (timer *Timer) Update(cycles uint) bool {
 
 func (timer *Timer) Read(addr types.Word) byte {
 	switch addr {
-	case 
+	case DIV:
+		return byte(timer.internalCounter >> 8)
+	case TIMA:
+		return timer.TIMA
+	case TMA:
+		return timer.TMA
+	case TAC:
+		return timer.TAC
+	}
+	panic("Illegal access detected.")
+}
+
+func (timer *Timer) Write(addr types.Word, data byte) {
+	switch addr {
+	case DIV:
+		// Writing any value se
