@@ -107,4 +107,15 @@ func (timer *Timer) Write(addr types.Word, data byte) {
 	}
 }
 
-func (timer *Timer)
+func (timer *Timer) isStarted() bool {
+	return timer.TAC&0x04 == 0x04
+}
+
+func (timer *Timer) hasFallingEdgeDetected(old, new uint16) bool {
+	mask := uint16(1 << timer.getMaskBit())
+	return ((old & mask) != 0) && ((new & mask) == 0)
+}
+
+func (timer *Timer) getMaskBit() uint {
+	switch timer.TAC & 0x03 {
+	case 0
