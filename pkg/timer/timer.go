@@ -118,4 +118,14 @@ func (timer *Timer) hasFallingEdgeDetected(old, new uint16) bool {
 
 func (timer *Timer) getMaskBit() uint {
 	switch timer.TAC & 0x03 {
-	case 0
+	case 0x00:
+		return 9
+	case 0x01:
+		return 3
+	case 0x02:
+		return 5
+	case 0x03:
+		return 7
+	}
+	return 0
+}
