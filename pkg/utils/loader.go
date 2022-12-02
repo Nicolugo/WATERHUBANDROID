@@ -19,3 +19,9 @@ func LoadROM(filename string) ([]byte, error) {
 	size := stats.Size()
 	bytes := make([]byte, size)
 	b := bufio.NewReader(file)
+	_, err = b.Read(bytes)
+	if err != nil {
+		return nil, err
+	}
+	return bytes, nil
+}
