@@ -93,4 +93,18 @@ func (timer *Timer) Write(addr types.Word, data byte) {
 		// Writing any value sets it to $00.
 		// When writing to DIV, the whole counter is reseted, so the timer is also affected.
 		// When writing to DIV, if the current output is '1' and timer is enabled
-		// as the new value after reseting DIV will be '0', the falling edge detector will
+		// as the new value after reseting DIV will be '0', the falling edge detector will detect a falling edge and TIMA will increase.
+		if timer.hasFallingEdgeDetected(timer.internalCounter, 0) {
+			timer.TIMA++
+		}
+		timer.internalCounter = 0
+	case TIMA:
+		timer.TIMA = data
+	case TMA:
+		timer.TMA = data
+	case TAC:
+		timer.TAC = data
+	}
+}
+
+func (timer *Timer)
