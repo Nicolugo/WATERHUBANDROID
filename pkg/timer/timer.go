@@ -90,4 +90,7 @@ func (timer *Timer) Read(addr types.Word) byte {
 func (timer *Timer) Write(addr types.Word, data byte) {
 	switch addr {
 	case DIV:
-		// Writing any value se
+		// Writing any value sets it to $00.
+		// When writing to DIV, the whole counter is reseted, so the timer is also affected.
+		// When writing to DIV, if the current output is '1' and timer is enabled
+		// as the new value after reseting DIV will be '0', the falling edge detector will
