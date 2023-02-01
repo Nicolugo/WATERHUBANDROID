@@ -47,4 +47,20 @@
 .org $200
 
 
-;;
+;;;; Shell
+     
+.include "runtime.s"
+.include "console.s"
+
+init_runtime:
+     call console_init
+     .ifdef TEST_NAME
+          print_str TEST_NAME,newline,newline
+     .endif
+     ret
+
+std_print:
+     push af
+     sta  SB
+     wreg SC,$81
+     delay 230
