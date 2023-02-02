@@ -63,4 +63,18 @@ std_print:
      push af
      sta  SB
      wreg SC,$81
-     delay 230
+     delay 2304
+     pop  af
+     jp   console_print
+
+post_exit:
+     call console_show
+     call play_byte
+forever:
+     wreg NR52,0    ; sound off
+-    jr   -
+
+play_byte:
+     ret
+
+.ends
