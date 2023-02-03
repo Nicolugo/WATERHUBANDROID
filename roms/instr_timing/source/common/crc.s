@@ -48,4 +48,23 @@ update_crc:
      rr   d
      rra
      jr   nc,+
- 
+     ld   e,a
+     ld   a,b
+     xor  $ED
+     ld   b,a
+     ld   a,c
+     xor  $B8
+     ld   c,a
+     ld   a,d
+     xor  $83
+     ld   d,a
+     ld   a,e
+     xor  $20
++    dec  h
+     jr   nz,-
+     
+     ld   h,>checksum
+     ldi  (hl),a
+     ld   (hl),d
+     inc  l
+     ld   
