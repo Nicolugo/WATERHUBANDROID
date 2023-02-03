@@ -14,4 +14,17 @@ init_crc:
 ; Preserved: BC, DE, HL
 reset_crc:
      ld   a,$FF
-     sta  checksu
+     sta  checksum+0
+     sta  checksum+1
+     sta  checksum+2
+     sta  checksum+3
+     ret
+
+
+; Updates current checksum with byte A
+; Preserved: AF, BC, DE, HL
+; Time: 237 cycles average
+update_crc:
+     ; 65 cycles + 8*cycles per bit
+     ; min cycles per bit: 14
+     ; max cyc
