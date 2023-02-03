@@ -27,4 +27,25 @@ reset_crc:
 update_crc:
      ; 65 cycles + 8*cycles per bit
      ; min cycles per bit: 14
-     ; max cyc
+     ; max cycles per bit: 29
+     push af
+     push bc
+     push de
+     push hl
+     
+     ld   hl,checksum+3
+     ld   b,(hl)
+     dec  l
+     ld   c,(hl)
+     dec  l
+     ld   d,(hl)
+     dec  l
+     xor  (hl)
+     
+     ld   h,8
+-    srl  b
+     rr   c
+     rr   d
+     rra
+     jr   nc,+
+ 
