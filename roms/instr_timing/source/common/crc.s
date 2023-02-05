@@ -67,4 +67,12 @@ update_crc:
      ldi  (hl),a
      ld   (hl),d
      inc  l
-     ld   
+     ld   (hl),c
+     inc  l
+     ld   (hl),b
+     
+     pop  hl
+     pop  de
+     pop  bc
+     pop  af
+     ret
