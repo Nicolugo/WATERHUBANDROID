@@ -170,3 +170,52 @@ delay_unrolled_:
      ret
 
 .macro delay_short_ ARGS n
+     .if n < 0
+          .fail
+     .endif
+     .if n > max_short_delay
+          .fail
+     .endif
+     
+     .if n == 1
+          nop
+     .endif
+     .if n == 2
+          nop
+          nop
+     .endif
+     .if n == 3
+          .byte $18,$00 ; JR +0
+     .endif
+     .if n == 4
+          .byte $18,$00 ; JR +0
+          nop
+     .endif
+     .if n == 5
+          .byte $18,$00 ; JR +0
+          nop
+          nop
+     .endif
+     .if n == 6
+          .byte $18,$00 ; JR +0
+          .byte $18,$00 ; JR +0
+     .endif
+     .if n == 7
+          push af
+          pop  af
+     .endif
+     .if n == 8
+          push af
+          pop  af
+          nop
+     .endif
+     .if n == 9
+          push af
+          pop  af
+          nop
+          nop
+     .endif
+     .if n >= 10
+          call delay_unrolled_ + 10 - n
+     .endif
+.endm
