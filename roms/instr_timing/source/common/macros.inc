@@ -46,4 +46,20 @@ for_loop\@:
      for_loop \1,0,\2 - 1,+1
 .endm
 
-; Same as for_loop, but counts 
+; Same as for_loop, but counts with 16-bit value in BC.
+; Preserved: DE, HL
+.macro for_loop16 ; routine,start,end,step
+     ld   bc,\2
+     
+for_loop16\@:
+     push bc
+     call \1
+     pop  bc
+     
+     ld   a,c
+     add  <\4
+     ld   c,a
+     
+     ld   a,b
+     adc  >\4
+     ld
