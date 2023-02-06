@@ -18,4 +18,17 @@
 ; Preserved: F, BC, DE, HL
 ; Time: 5 cycles
 .macro wreg ARGS addr, data
-     ld  
+     ld   a,data
+     sta  addr
+.endm
+
+; Calls routine multiple times, with A having the
+; value 'start' the first time, 'start+step' the
+; second time, up to 'end' for the last time.
+; Preserved: BC, DE, HL
+.macro for_loop ; routine,start,end,step
+     ld   a,\2
+     
+for_loop\@:
+     push af
+     call \
