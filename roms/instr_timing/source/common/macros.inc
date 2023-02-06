@@ -31,4 +31,19 @@
      
 for_loop\@:
      push af
-     call \
+     call \1
+     pop  af
+     
+     add  \4
+     cp   <(\3 + \4)
+     jr   nz,for_loop\@
+.endm
+
+; Calls routine n times. The value of A in the routine
+; counts from 0 to n-1.
+; Preserved: BC, DE, HL
+.macro loop_n_times ; routine,n
+     for_loop \1,0,\2 - 1,+1
+.endm
+
+; Same as for_loop, but counts 
