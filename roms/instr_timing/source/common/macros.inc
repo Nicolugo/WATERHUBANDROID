@@ -62,4 +62,12 @@ for_loop16\@:
      
      ld   a,b
      adc  >\4
-     ld
+     ld   b,a
+     
+     cp   >(\3+\4)
+     jr   nz,for_loop16\@
+     
+     ld   a,c
+     cp   <(\3+\4)
+     jr   nz,for_loop16\@
+.endm
