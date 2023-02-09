@@ -18,4 +18,28 @@ print_a:
 print_a_:
      call print_hex
      ld   a,' '
-     call print_ch
+     call print_char_nocrc
+     pop  af
+     ret
+
+print_af:
+     push af
+     call print_hex
+     pop  af
+print_f:
+     push bc
+     push af
+     pop  bc
+     call print_c
+     pop  bc
+     ret
+
+print_b:
+     push af
+     ld   a,b
+     jr   print_a_
+
+print_c:
+     push af
+     ld   a,c
+     jr   prin
