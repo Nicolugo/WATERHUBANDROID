@@ -89,4 +89,22 @@ print_hl:
      jr   print_bc_
      
 
-; Prints 
+; Prints A as two hex chars and updates checksum
+; Preserved: BC, DE, HL
+print_hex:
+     call update_crc
+print_hex_nocrc:
+     push af
+     swap a
+     call +
+     pop  af
+     
++    and  $0F
+     cp   10
+     jr   c,+
+     add  7
++    add  '0'
+     jp   print_char_nocrc
+
+
+;
