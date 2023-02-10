@@ -107,4 +107,15 @@ print_hex_nocrc:
      jp   print_char_nocrc
 
 
-;
+; Prints char_nz if Z flag is clear,
+; char_z if Z flag is set.
+; Preserved: AF, BC, DE, HL
+.macro print_nz ARGS char_nz, char_z
+     push af
+     ld   a,char_nz
+     jr   nz,print_nz\@
+     ld   a,char_z
+print_nz\@:
+     call print_char
+     pop  af
+.e
