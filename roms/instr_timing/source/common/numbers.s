@@ -69,4 +69,24 @@ print_bc:
      push bc
 print_bc_:
      ld   a,b
- 
+     call print_hex
+     ld   a,c
+     pop  bc
+     jr   print_a_
+     
+print_de:
+     push af
+     push bc
+     ld   b,d
+     ld   c,e
+     jr   print_bc_
+     
+print_hl:
+     push af
+     push bc
+     ld   b,h
+     ld   c,l
+     jr   print_bc_
+     
+
+; Prints 
