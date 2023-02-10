@@ -42,4 +42,31 @@ print_b:
 print_c:
      push af
      ld   a,c
-     jr   prin
+     jr   print_a_
+
+print_d:
+     push af
+     ld   a,d
+     jr   print_a_
+
+print_e:
+     push af
+     ld   a,e
+     jr   print_a_
+
+print_h:
+     push af
+     ld   a,h
+     jr   print_a_
+
+print_l:
+     push af
+     ld   a,l
+     jr   print_a_
+
+print_bc:
+     push af
+     push bc
+print_bc_:
+     ld   a,b
+ 
