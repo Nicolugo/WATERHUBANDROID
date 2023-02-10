@@ -118,4 +118,16 @@ print_hex_nocrc:
 print_nz\@:
      call print_char
      pop  af
-.e
+.endm
+
+
+; Prints char_nc if C flag is clear,
+; char_c if C flag is set.
+; Preserved: AF, BC, DE, HL
+.macro print_nc ARGS char_nc, char_c
+     push af
+     ld   a,char_nc
+     jr   nz,print_nc\@
+     ld   a,char_c
+print_nc\@:
+     call print_
