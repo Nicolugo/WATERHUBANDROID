@@ -86,3 +86,58 @@ std_reset:
           wreg IE,$00
      .endif
      
+     wreg NR52,0    ; sound off
+     wreg NR52,$80  ; sound on
+     wreg NR51,$FF  ; mono
+     wreg NR50,$77  ; volume
+     
+     ; TODO: clear all memory?
+     
+     ld   hl,std_print
+     call init_printing
+     call init_testing
+     call init_runtime
+     call reset_crc ; in case init_runtime prints anything
+     
+     delay_msec 250
+     
+     ; Run user code
+     call main
+     
+     ; Default is to successful exit
+     ld   a,0
+     jp   exit
+
+
+; Exits code and reports value of A
+exit:
+     ld   sp,std_stack
+     push af
+     call +
+     pop  af
+     jp   post_exit
+
++    push af   
+     call print_newline
+     call show_printing
+     pop  af
+     
+     ; Report exit status
+     cp   1
+     
+     ; 0: ""
+     ret  c
+     
+     ; 1: "Failed"
+     jr   nz,+
+     print_str "Failed",newline
+     ret
+     
+     ; n: "Failed #n"
++    print_str "Failed #"
+     call print_dec
+     call print_newline
+     ret
+
+; returnOrg puts this code AFTER user code.
+.section "runtime" returnOrg
