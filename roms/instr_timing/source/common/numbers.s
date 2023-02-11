@@ -149,4 +149,25 @@ print_dec:
      push af
      push bc
      
-     cp 
+     cp   10
+     jr   c,++
+     ld   c,100
+     cp   c
+     call nc,@digit
++    ld   c,10
+     call @digit
+++   add  '0'
+     call print_char
+     
+     pop  bc
+     pop  af
+     ret
+     
+@digit:
+     ld   b,'0'-1
+-    inc  b
+     sub  c
+     jr   nc,-
+     add  c
+     
+     ld
