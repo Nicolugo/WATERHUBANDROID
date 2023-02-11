@@ -170,4 +170,8 @@ print_dec:
      jr   nc,-
      add  c
      
-     ld
+     ld   c,a
+     ld   a,b
+     call print_char
+     ld   a,c
+     ret
