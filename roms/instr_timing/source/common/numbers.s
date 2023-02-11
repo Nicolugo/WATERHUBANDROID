@@ -130,4 +130,23 @@ print_nz\@:
      jr   nz,print_nc\@
      ld   a,char_c
 print_nc\@:
-     call print_
+     call print_char
+     pop  af
+.endm
+
+
+; Prints A as 2 decimal digits
+; Preserved: AF, BC, DE, HL
+print_dec2:
+     push af
+     push bc
+     jr   +
+
+
+; Prints A as 1-3 digit decimal value
+; Preserved: AF, BC, DE, HL
+print_dec:
+     push af
+     push bc
+     
+     cp 
