@@ -46,3 +46,104 @@ main:
      
      ; Test instructions
      ld   hl,instructions
+-    call @time_instr
+     cp   (hl)
+     call nz,@print_failed
+     inc  hl
+     ld   a,l
+     cp   <instructions_end
+     jr   nz,-
+     
+     jp   tests_done
+
+@print_failed:
+     push hl
+     ld   b,a
+     ld   c,(hl)
+     dec  hl
+     dec  hl
+     dec  hl
+     ld   a,(hl+)
+     cp   $CB
+     jr   nz,+
+     call print_a
+     ld   a,(hl)
++    call print_hex
+     print_str ":"
+     ld   a,b
+     call print_dec
+     print_str "-"
+     ld   a,c
+     call print_dec
+     print_str " "
+     pop  hl
+     set_test 1
+     ret
+
+; Tests instruction
+; HL -> 3-byte instruction
+; HL <- HL + 3
+@time_instr: ; 
+     ; Copy instr ; PC = 0xc353
+     ld   a,(hl+)
+     ld   (instr+0),a
+     ld   a,(hl+)
+     ld   (instr+1),a
+     ld   a,(hl+)
+     ld   (instr+2),a
+     push hl ; PC = 0xc3a9 
+     
+     ; Find result when access doesn't occur
+     ld   b,0
+     call @time_access
+     ld   c,a
+     
+     ; Test for accesses on each cycle
+     ld   b,0
+-    push bc
+     call @time_access
+     pop  bc
+     cp   c
+     jr   nz,@found
+     inc  b
+     ld   a,b
+     cp   10
+     jr   nz,-
+     ld   b,0
+     
+@found:
+     ld   a,b
+     pop  hl
+     ret
+
+; Tests for read
+; B -> which cycle to test
+; A <- timer value after test
+@time_access:
+     call sync_tima_64
+     ld   a,9
+     sub  b
+     call delay_a_20_cycles
+     xor  a    ; clear flags
+     ld   hl,tima_64
+     ld   (hl),$7F
+     ld   bc,tima_64
+     ld   de,tima_64
+     ld   a,$7F
+instr:
+     nop
+     nop
+     nop
+     
+     ; Add all registers together to yield
+     ; unique value that differs based on
+     ; read occurring before or after tima_64
+     ; increments.
+     push af
+     add  hl,bc
+     add  hl,de
+     pop  de
+     add  hl,de
+     ld   a,h
+     add  l
+     ret
