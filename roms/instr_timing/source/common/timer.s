@@ -60,3 +60,30 @@ stop_timer:
      sub  10
      pop  de
      ret
+
+
+; Same as stop_timer, but with greater range.
+; DE = cycles (0 to 1019).
+; Preserved: BC, HL
+stop_timer_word:
+     
+     ld   d,0
+     
+     ; Get main count (TIMA*4)
+     lda  TIMA
+     sub  5
+     add  a
+     rl   d
+     add  a
+     rl   d
+     ld   e,a
+     
+     ; One iteration per remaining cycle
+-    xor  a         ; 1
+     sta  TIMA      ; 3
+     lda  TIMA      ; 3
+     dec  de        ; 2
+     or   a         ; 1
+     jr   nz,-      ; 3
+     
+     ret
