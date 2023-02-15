@@ -34,4 +34,21 @@ main:
      call nz,@print_failed
      inc  hl
      ld   a,l
-     cp
+     cp   <instructions_end
+     jr   nz,-
+     
+     jp   tests_done
+
+@print_failed:
+     push hl
+     ld   b,a
+     ld   c,(hl)
+     dec  hl
+     dec  hl
+     dec  hl
+     ld   a,(hl)
+     call print_hex
+     print_str ":"
+     ld   a,b
+     call print_dec
+     
