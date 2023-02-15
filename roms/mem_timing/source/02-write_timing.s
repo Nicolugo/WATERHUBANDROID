@@ -66,4 +66,18 @@ main:
      ; Copy instr
      ld   a,(hl+)
      ld   (instr+0),a
- 
+     ld   a,(hl+)
+     ld   (instr+1),a
+     ld   a,(hl+)
+     ld   (instr+2),a
+     push hl
+     
+     ; Test for writes on each cycle
+     ld   b,0
+-    push bc
+     call @time_write
+     pop  bc
+     cp   <tima_64
+     jr   z,@no_write
+     cp   >tima_64
+     jr   z,@no_writ
