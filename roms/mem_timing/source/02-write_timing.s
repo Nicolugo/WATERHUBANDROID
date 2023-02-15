@@ -13,4 +13,11 @@ instructions:
      .byte $73,$00,$00,2 ; LD   (HL),E
      .byte $74,$00,$00,2 ; LD   (HL),H
      .byte $75,$00,$00,2 ; LD   (HL),L
+     .byte $77,$00,$00,2 ; LD   (HL),A
+     .byte $02,$00,$00,2 ; LD   (BC),A
+     .byte $12,$00,$00,2 ; LD   (DE),A
+     .byte $22,$00,$00,2 ; LD   (HL+),A
+     .byte $32,$00,$00,2 ; LD   (HL-),A
+     .byte $E2,$00,$00,2 ; LDH  (C),A
+     .byte $E0,<tima_64,$00,3 ; LDH  (n),A
      
