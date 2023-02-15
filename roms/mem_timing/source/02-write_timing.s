@@ -51,4 +51,19 @@ main:
      print_str ":"
      ld   a,b
      call print_dec
-     
+     print_str "-"
+     ld   a,c
+     call print_dec
+     print_str " "
+     pop  hl
+     set_test 1
+     ret
+
+; Tests instruction
+; HL -> 3-byte instruction
+; HL <- HL + 3
+@test_instr:
+     ; Copy instr
+     ld   a,(hl+)
+     ld   (instr+0),a
+ 
