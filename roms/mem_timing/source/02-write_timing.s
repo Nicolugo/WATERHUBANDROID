@@ -20,4 +20,18 @@ instructions:
      .byte $32,$00,$00,2 ; LD   (HL-),A
      .byte $E2,$00,$00,2 ; LDH  (C),A
      .byte $E0,<tima_64,$00,3 ; LDH  (n),A
+     .byte $EA,<tima_64,>tima_64,4 ; LD   (nn),A
+instructions_end:
+
+main:
+     call init_tima_64
+     set_test 0
      
+     ; Test instructions
+     ld   hl,instructions
+-    call @test_instr
+     cp   (hl)
+     call nz,@print_failed
+     inc  hl
+     ld   a,l
+     cp
