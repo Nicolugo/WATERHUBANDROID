@@ -80,4 +80,25 @@ main:
      cp   <tima_64
      jr   z,@no_write
      cp   >tima_64
-     jr   z,@no_writ
+     jr   z,@no_write
+     jr   @found
+@no_write:
+     inc  b
+     ld   a,b
+     cp   10
+     jr   nz,-
+     ld   b,0
+     
+@found:
+     ld   a,b
+     pop  hl
+     ret
+
+; Tests for write
+; B -> which cycle to test
+; A <- timer value after test
+@time_write:
+     call sync_tima_64
+     ld   a,13
+     sub  b
+     call delay_a_20_
