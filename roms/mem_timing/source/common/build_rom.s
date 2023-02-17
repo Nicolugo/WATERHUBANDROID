@@ -34,4 +34,24 @@
      .byte ROM_NAME
 .endif
 
-; CGB/DMG requireme
+; CGB/DMG requirements
+.org $143
+     .ifdef REQUIRE_CGB
+          .byte $C0
+     .else
+          .ifndef REQUIRE_DMG
+               .byte $80
+          .endif
+     .endif
+
+.org $200
+
+
+;;;; Shell
+     
+.include "runtime.s"
+.include "console.s"
+
+init_runtime:
+     call console_init
+   
