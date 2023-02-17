@@ -70,4 +70,11 @@ std_print:
 post_exit:
      call console_show
      call play_byte
-f
+forever:
+     wreg NR52,0    ; sound off
+-    jr   -
+
+play_byte:
+     ret
+
+.ends
