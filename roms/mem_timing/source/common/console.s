@@ -201,3 +201,92 @@ console_print:
      push af
      
 @not_at_end:
+     pop  af
+     or   (hl)      ; apply current attributes
+     dec  l         ; hl = console_pos
+     dec  (hl)      ; console_pos = console_pos - 1
+     ld   l,(hl)    ; hl = position in buffer
+     ld   (hl),a
+     
+@ignore_space
+     pop  hl
+     pop  af
+     ret
+
+
+; Displays current line and starts new one
+; Preserved: AF, BC, DE, HL
+console_newline:
+     push af
+console_newline_:
+     call console_wait_vbl
+     call console_flush_
+     call console_scroll_up_
+     call console_flush_
+     jp   console_apply_scroll_
+
+
+console_scroll_up_:
+     push bc
+     push hl
+     
+     ; Scroll up 8 pixels
+     ld   a,(console_scroll)
+     add  8
+     ld   (console_scroll),a
+     
+     ; Start new clear line
+     ld   a,' '
+     ld   hl,console_buf + console_width - 1
+     ld   b,console_width
+-    ldd  (hl),a
+     dec  b
+     jr   nz,-
+     ld   a,<(console_buf + console_width)
+     ld   (console_pos),a
+     
+     pop  hl
+     pop  bc
+     ret
+
+
+; Displays current line's contents without scrolling.
+; Preserved: A, BC, DE, HL
+console_flush:
+     push af
+     call console_wait_vbl
+     call console_flush_
+console_apply_scroll_:
+     ld   a,(console_scroll)
+     sub  136
+     sta  SCY
+     pop  af
+     ret
+     
+console_flush_:
+     push de
+     push hl
+     
+     ; Address of row in nametable
+     ld   a,(console_scroll)
+     ld   l,a
+     ld   h,(>BGMAP0) >> 2
+     add  hl,hl
+     add  hl,hl
+     
+     ; Copy line
+     ld   de,console_buf + console_width
+-    dec  e
+     ld   a,(de)
+     ldi  (hl),a
+     ld   a,e
+     cp   <console_buf
+     jr   nz,-
+     
+     pop  hl
+     pop  de
+     ret
+
+
+ASCII:
+     .incbin "console.bin"
