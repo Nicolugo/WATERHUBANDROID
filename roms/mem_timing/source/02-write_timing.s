@@ -101,4 +101,15 @@ main:
      call sync_tima_64
      ld   a,13
      sub  b
-     call delay_a_20_
+     call delay_a_20_cycles
+     ld   hl,tima_64
+     ld   bc,tima_64
+     ld   de,tima_64
+     ld   a,<tima_64
+instr:
+     nop
+     nop
+     nop
+     delay 32
+     ld   a,(tima_64)
+     ret
