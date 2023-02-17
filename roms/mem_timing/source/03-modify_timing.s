@@ -129,3 +129,29 @@ main:
      inc  b
      ld   a,b
      cp   10
+     jr   c,-
+     
+     ; Couldn't find time, so return 0/0
+     ld   a,c
+     ld   b,0
+     ld   d,b
+     ret
+     
+; Tests for access
+; B -> which cycle to test
+; A <- timer value after test
+@time_access:
+     call sync_tima_64
+     ld   hl,tima_64
+     ld   (hl),$7F
+     ld   a,17
+     sub  b
+     call delay_a_20_cycles
+     xor  a    ; clear flags
+instr:
+     nop
+     nop
+     nop
+     delay 32
+     ld   a,(tima_64)
+     ret
