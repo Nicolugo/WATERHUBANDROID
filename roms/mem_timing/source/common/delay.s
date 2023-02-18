@@ -87,3 +87,135 @@
                .if high*n > 11
                     delay_long_ n, high
                .else
+                    .if (high*(255+22+1))|n > 255+22
+                         ld   a,>(((high<<16)+n) - 11)
+                         call delay_256a_9_cycles_
+                         delay_nosave_ <(((high<<16)+n) - 11), 0
+                    .else
+                         .if n >= 22
+                              ld   a,n - 22
+                              call delay_a_20_cycles
+                         .else
+                              delay_short_ n
+                         .endif
+                    .endif
+               .endif
+          .endif
+     .endm
+     
+     .macro delay_ ARGS low, high
+          .if (high*(max_short_delay+1))|low > max_short_delay
+               push af
+               delay_nosave_ ((high<<16)+low - 7)&$FFFF, ((high<<16)+low - 7)>>16
+               pop  af
+          .else
+               delay_short_ low
+          .endif
+     .endm
+
+
+; Delays A cycles + overhead
+; Preserved: BC, DE, HL
+; Time: A+20 cycles (including CALL)
+delay_a_20_cycles:
+-    sub  5    ; 2
+     jr   nc,- ;3/2 do multiples of 5
+     rra       ; 1
+     jr   nc,+ ;3/2 bit 0
++    adc  1    ; 2
+     ret  nc   ;5/2 -1: 0 cycles
+     ret  z    ;5/2  0: 2 cycles
+     nop       ; 1   1: 4 cycles
+     ret       ; 4 (thanks to dclxvi for original algorithm)
+
+; Delays A*256 cycles + overhead
+; Preserved: BC, DE, HL
+; Time: A*256+12 cycles (including CALL)
+delay_256a_12_cycles:
+     or   a              ; 1
+     ret  z              ; 5/2
+delay_256a_9_cycles_:
+-    delay 256-4
+     dec  a              ; 1
+     jr   nz,-           ;3/2
+     ret                 ; 4
+
+; Delays A*65536 cycles + overhead
+; Preserved: BC, DE, HL
+; Time: A*65536+12 cycles (including CALL)
+delay_65536a_12_cycles:
+     or   a              ; 1
+     ret  z              ;5/2
+delay_65536a_9_cycles_:
+-    delay 65536-4
+     dec  a              ; 1
+     jr   nz,-           ;3/2
+     ret                 ; 4
+
+; Delays H*256+L cycles + overhead
+; Preserved: AF, BC, DE, HL
+; Time: H*256+L+51 cycles
+delay_hl_51_cycles:
+     push af
+     ld   a,h
+     call delay_256a_12_cycles
+     ld   a,l
+     call delay_a_20_cycles
+     pop  af
+     ret
+
+     ; delay_short_ macro calls into these
+     .ds max_short_delay-10,$00 ; NOP repeated several times
+delay_unrolled_:
+     ret
+
+.macro delay_short_ ARGS n
+     .if n < 0
+          .fail
+     .endif
+     .if n > max_short_delay
+          .fail
+     .endif
+     
+     .if n == 1
+          nop
+     .endif
+     .if n == 2
+          nop
+          nop
+     .endif
+     .if n == 3
+          .byte $18,$00 ; JR +0
+     .endif
+     .if n == 4
+          .byte $18,$00 ; JR +0
+          nop
+     .endif
+     .if n == 5
+          .byte $18,$00 ; JR +0
+          nop
+          nop
+     .endif
+     .if n == 6
+          .byte $18,$00 ; JR +0
+          .byte $18,$00 ; JR +0
+     .endif
+     .if n == 7
+          push af
+          pop  af
+     .endif
+     .if n == 8
+          push af
+          pop  af
+          nop
+     .endif
+     .if n == 9
+          push af
+          pop  af
+          nop
+          nop
+     .endif
+     .if n >= 10
+          call delay_unrolled_ + 10 - n
+     .endif
+.endm
