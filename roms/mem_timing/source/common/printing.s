@@ -90,4 +90,9 @@ print_str_:
 print_str_hl:
      push af
      jr   +
--    call 
+-    call print_char
++    ldi  a,(hl)
+     or   a
+     jr   nz,-
+     pop  af
+     ret
