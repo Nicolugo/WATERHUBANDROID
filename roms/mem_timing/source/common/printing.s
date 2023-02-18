@@ -45,4 +45,21 @@ print_char:
 ; Prints space. Does NOT update checksum.
 ; Preserved: AF, BC, DE, HL
 print_space:
-  
+     push af
+     ld   a,' '
+     call print_char_nocrc
+     pop  af
+     ret
+
+
+; Advances to next line. Does NOT update checksum.
+; Preserved: AF, BC, DE, HL
+print_newline:
+     push af
+     ld   a,newline
+     call print_char_nocrc
+     pop  af
+     ret
+
+
+; Prints immediate strin
