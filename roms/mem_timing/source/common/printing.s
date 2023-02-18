@@ -30,4 +30,19 @@ show_printing:
      ret
 
 
-; Prints character and upd
+; Prints character and updates checksum UNLESS
+; it's a newline.
+; Preserved: AF, BC, DE, HL
+print_char:
+     push af
+     cp   newline
+     call nz,update_crc
+     call print_char_nocrc
+     pop  af
+     ret
+
+
+; Prints space. Does NOT update checksum.
+; Preserved: AF, BC, DE, HL
+print_space:
+  
