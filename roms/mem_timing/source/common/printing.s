@@ -15,4 +15,19 @@ init_printing:
      ld   a,l
      ld   (print_char_nocrc+1),a
      ld   a,h
-     ld   (print
+     ld   (print_char_nocrc+2),a
+     jr   show_printing
+
+
+; Hides/shows further printing
+; Preserved: BC, DE, HL
+hide_printing:
+     ld   a,$C9     ; RET
+     jr   +
+show_printing:
+     ld   a,$C3     ; JP (nn)
++    ld   (print_char_nocrc),a
+     ret
+
+
+; Prints character and upd
