@@ -76,4 +76,18 @@ print_newline:
      .endif
      .byte 0
      pop  hl
-.
+.endm
+
+print_str_:
+     pop  hl
+     call print_str_hl
+     jp   hl
+
+
+; Prints zero-terminated string pointed to by HL.
+; On return, HL points to byte AFTER zero terminator.
+; Preserved: AF, BC, DE
+print_str_hl:
+     push af
+     jr   +
+-    call 
