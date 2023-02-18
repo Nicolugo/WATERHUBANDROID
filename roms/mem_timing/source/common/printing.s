@@ -62,4 +62,18 @@ print_newline:
      ret
 
 
-; Prints immediate strin
+; Prints immediate string
+; Preserved: AF, BC, DE, HL
+.macro print_str ; string,string2
+     push hl
+     call print_str_
+     .byte \1
+     .if NARGS > 1
+          .byte \2
+     .endif
+     .if NARGS > 2
+          .byte \3
+     .endif
+     .byte 0
+     pop  hl
+.
