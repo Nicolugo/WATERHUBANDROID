@@ -32,4 +32,26 @@ set_test_:
      ldi  a,(hl)
      ld   (result),a
      ld   a,l
-     ld   (test_
+     ld   (test_name),a
+     ld   a,h
+     ld   (test_name+1),a
+     pop  af
+     ret
+
+
+; Initializes testing module
+init_testing:
+     set_test $FF
+     call init_crc
+     ret
+
+
+; Reports "Passed", then exits with code 0
+tests_passed:
+     call print_newline
+     print_str "Passed"
+     ld   a,0
+     jp   exit
+
+
+;
