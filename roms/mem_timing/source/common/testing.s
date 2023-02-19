@@ -54,4 +54,14 @@ tests_passed:
      jp   exit
 
 
-;
+; Reports "Done" if set_test has never been used,
+; "Passed" if set_test 0 was last used, or
+; failure if set_test n was last used.
+tests_done:
+     ld   a,(result)
+     inc  a
+     jr   z,+
+     dec  a
+     jr   z,tests_passed
+     jr   test_failed
++    print_str 
