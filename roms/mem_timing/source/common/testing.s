@@ -94,4 +94,25 @@ print_crc:
      push af
      
      ; Must read checksum entirely before printing,
-  
+     ; since printing updates it.
+     lda  checksum
+     cpl
+     push af
+     
+     lda  checksum+1
+     cpl
+     push af
+     
+     lda  checksum+2
+     cpl
+     push af
+     
+     lda  checksum+3
+     cpl
+     
+     call print_hex
+     pop  af
+     call print_hex
+     pop  af
+     call print_hex
+ 
