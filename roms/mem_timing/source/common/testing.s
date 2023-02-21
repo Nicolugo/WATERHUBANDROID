@@ -64,4 +64,19 @@ tests_done:
      dec  a
      jr   z,tests_passed
      jr   test_failed
-+    print_str 
++    print_str "Done"
+     ld   a,0
+     jp   exit
+
+
+; Reports current error text and exits with result code
+test_failed:
+     ld   a,(test_name)
+     ld   l,a
+     ld   a,(test_name+1)
+     ld   h,a
+     ld   a,(hl)
+     or   a
+     jr   z,+
+     call print_newline
+     call print_str_hl
