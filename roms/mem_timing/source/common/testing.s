@@ -80,3 +80,18 @@ test_failed:
      jr   z,+
      call print_newline
      call print_str_hl
+     call print_newline
++    
+     ld   a,(result)
+     cp   1         ; if a = 0 then a = 1
+     adc  0
+     jp   exit
+
+
+; Prints checksum as 8-character hex value
+; Preserved: AF, BC, DE, HL
+print_crc:
+     push af
+     
+     ; Must read checksum entirely before printing,
+  
