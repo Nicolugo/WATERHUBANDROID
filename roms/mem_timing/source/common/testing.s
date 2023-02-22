@@ -128,4 +128,19 @@ print_crc:
      .if crc == 0
           call show_printing
           call print_newline
-          call p
+          call print_crc
+     .else
+          ld   bc,(crc >> 16) ~ $FFFF
+          ld   de,(crc & $FFFF) ~ $FFFF
+          call check_crc_
+     .endif
+.endm
+
+check_crc_:
+     lda  checksum+0
+     cp   e
+     jr   nz,+
+     
+     lda  checksum+1
+     cp   d
+     j
