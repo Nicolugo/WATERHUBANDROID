@@ -161,4 +161,16 @@ check_crc_:
 
 ; Updates checksum with bytes from addr to addr+size-1
 .macro checksum_mem ARGS addr,size
-     ld
+     ld   hl,addr
+     ld   bc,size
+     call checksum_mem_
+.endm
+
+checksum_mem_:
+-    ldi  a,(hl)
+     call update_crc
+     dec  bc
+     ld   a,b
+     or   c
+     jr   nz,-
+     ret
