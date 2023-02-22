@@ -143,4 +143,22 @@ check_crc_:
      
      lda  checksum+1
      cp   d
-     j
+     jr   nz,+
+     
+     lda  checksum+2
+     cp   c
+     jr   nz,+
+     
+     lda  checksum+3
+     cp   b
+     jr   nz,+
+     
+     jp   reset_crc
+     
++    call print_crc
+     jp   test_failed
+
+
+; Updates checksum with bytes from addr to addr+size-1
+.macro checksum_mem ARGS addr,size
+     ld
