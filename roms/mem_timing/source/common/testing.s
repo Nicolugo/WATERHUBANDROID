@@ -115,4 +115,17 @@ print_crc:
      call print_hex
      pop  af
      call print_hex
- 
+     pop  af
+     call print_a
+     
+     pop  af
+     ret
+
+
+; If checksum doesn't match expected, reports failed test.
+; Passing 0 just prints checksum. Clears checksum afterwards.
+.macro check_crc ARGS crc
+     .if crc == 0
+          call show_printing
+          call print_newline
+          call p
