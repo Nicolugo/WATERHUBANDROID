@@ -21,4 +21,13 @@ sync_tima_64:
      xor  a
      ld   (hl),a
      or   (hl)
-     dela
+     delay 4
+     jr   z,-
+     
+     pop  hl
+     pop  af
+     ret
+
+; Read from this to get count that's incremented
+; every 64 cycles.
+.define tima_64 TIMA
